@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 
-export default function DogrulamaPage() {
+import { Suspense } from "react"
+
+function DogrulamaContent() {
     const searchParams = useSearchParams()
     const token = searchParams.get("token")
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
@@ -73,5 +75,17 @@ export default function DogrulamaPage() {
                 )}
             </div>
         </div>
+    )
+}
+
+export default function DogrulamaPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        }>
+            <DogrulamaContent />
+        </Suspense>
     )
 }

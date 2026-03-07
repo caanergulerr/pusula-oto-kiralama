@@ -15,7 +15,9 @@ const formSchema = z.object({
     password: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
 })
 
-export function LoginForm() {
+import { Suspense } from "react"
+
+function LoginFormContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
@@ -138,5 +140,13 @@ export function LoginForm() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export function LoginForm() {
+    return (
+        <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>}>
+            <LoginFormContent />
+        </Suspense>
     )
 }

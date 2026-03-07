@@ -38,7 +38,7 @@ const carSchema = z.object({
 
 interface CarFormProps {
     initialData?: Car;
-    onSubmit: (data: any) => Promise<void>;
+    onSubmit: (data: z.infer<typeof carSchema> & { features?: string }) => Promise<void>;
 }
 
 const AVAILABLE_FEATURES = [
@@ -70,7 +70,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
     const [customFeatures, setCustomFeatures] = useState<string[]>([])
     const [newFeature, setNewFeature] = useState("")
 
-    const form = useForm<z.infer<typeof carSchema>>({
+    const form = useForm({
         resolver: zodResolver(carSchema),
         defaultValues: {
             brand: initialData?.brand || "",
@@ -256,7 +256,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <FormItem>
                                 <FormLabel>Yıl</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="2024" {...field} />
+                                    <Input type="number" placeholder="2024" {...field} value={field.value as number | string || ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -270,7 +270,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <FormItem>
                                 <FormLabel>Günlük Fiyat (₺)</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="1000" {...field} />
+                                    <Input type="number" placeholder="1000" {...field} value={field.value as number | string || ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -284,7 +284,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <FormItem>
                                 <FormLabel>Toplam Stok</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="1" {...field} />
+                                    <Input type="number" placeholder="1" {...field} value={field.value as number | string || ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -298,7 +298,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <FormItem>
                                 <FormLabel>Kilometre Sınırı (günlük)</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="150" {...field} />
+                                    <Input type="number" placeholder="150" {...field} value={field.value as number | string || ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

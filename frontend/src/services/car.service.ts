@@ -11,7 +11,13 @@ export interface Car {
     description?: string;
     fuelType?: string;
     gearType?: string;
-    isAvailable: boolean;
+    isAvailable?: boolean;
+    features?: string;
+    specs?: string;
+    kmLimit?: number;
+    plateNumber?: string;
+    totalStock?: number;
+    availableStock?: number;
 }
 
 export const carService = {

@@ -6,7 +6,9 @@ import { CarCard } from "@/components/home/car-card"
 import { CarFilters, FilterValues } from "@/components/cars/car-filters"
 import { Filter, X, Car } from "lucide-react"
 
-export default function CarsPage() {
+import { Suspense } from "react"
+
+function CarsPageContent() {
     const searchParams = useSearchParams()
     const [cars, setCars] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -141,5 +143,17 @@ export default function CarsPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function CarsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        }>
+            <CarsPageContent />
+        </Suspense>
     )
 }
