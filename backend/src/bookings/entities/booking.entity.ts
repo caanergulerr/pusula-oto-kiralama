@@ -15,17 +15,17 @@ export class Booking {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'datetime' }) // MSSQL uses datetime
+    @Column({ type: 'timestamp' })
     startDate: Date;
 
-    @Column({ type: 'datetime' })
+    @Column({ type: 'timestamp' })
     endDate: Date;
 
     @Column('decimal', { precision: 10, scale: 2 })
     totalPrice: number;
 
     @Column({
-        type: 'nvarchar',
+        type: 'varchar',
         length: 20,
         default: BookingStatus.PENDING,
     })

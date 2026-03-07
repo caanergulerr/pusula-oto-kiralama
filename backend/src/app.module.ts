@@ -23,18 +23,11 @@ import { StatsModule } from './stats/stats.module';
       limit: 60,    // max 60 istek
     }]),
     TypeOrmModule.forRoot({
-      type: 'mssql',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '1433'),
-      username: process.env.DB_USER || 'rentacar_user',
-      password: process.env.DB_PASS || 'RentUser12345',
-      database: process.env.DB_NAME || 'RentACar',
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
-      },
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
       autoLoadEntities: true,
-      synchronize: false, // ⚠️ Production'da KAPATILDI - migration kullanın
+      synchronize: true, // Neon'da tabloları otomatik oluştur
     }),
     CarsModule,
     UsersModule,

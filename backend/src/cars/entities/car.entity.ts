@@ -33,13 +33,13 @@ export class Car {
     @Column({ nullable: true })
     kmLimit: number;
 
-    @Column('nvarchar', { length: 'MAX', nullable: true })
+    @Column('text', { nullable: true })
     description: string;
 
-    @Column('nvarchar', { length: 'MAX', nullable: true })
+    @Column('text', { nullable: true })
     features: string; // Stored as JSON string (GPS, Bluetooth, etc.)
 
-    @Column('nvarchar', { length: 'MAX', nullable: true })
+    @Column('text', { nullable: true })
     specs: string; // Stored as JSON string
 
     @OneToMany(() => Booking, (booking) => booking.car)

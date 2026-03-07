@@ -20,7 +20,7 @@ export class User {
     fullName: string;
 
     @Column({
-        type: 'nvarchar',
+        type: 'varchar',
         length: 20,
         default: UserRole.CUSTOMER,
     })
@@ -32,13 +32,13 @@ export class User {
     @Column({ name: 'is_email_verified', default: false })
     isEmailVerified: boolean;
 
-    @Column({ name: 'verification_token', nullable: true, type: 'nvarchar', length: 36 })
+    @Column({ name: 'verification_token', nullable: true, type: 'varchar', length: 36 })
     verificationToken: string | null;
 
-    @Column({ name: 'password_reset_token', nullable: true, type: 'nvarchar', length: 36 })
+    @Column({ name: 'password_reset_token', nullable: true, type: 'varchar', length: 36 })
     passwordResetToken: string | null;
 
-    @Column({ name: 'password_reset_expiry', nullable: true, type: 'datetime2' })
+    @Column({ name: 'password_reset_expiry', nullable: true, type: 'timestamp' })
     passwordResetExpiry: Date | null;
 
     @CreateDateColumn({ name: 'created_at' })
