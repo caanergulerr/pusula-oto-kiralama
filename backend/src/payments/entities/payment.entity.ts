@@ -26,7 +26,7 @@ export class Payment {
     transactionId: string; // Stripe PaymentIntent ID
 
     @Column({
-        type: 'nvarchar',
+        type: 'varchar',
         length: 20,
         default: PaymentStatus.PENDING,
     })
