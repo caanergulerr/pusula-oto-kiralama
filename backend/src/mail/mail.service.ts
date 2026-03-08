@@ -6,13 +6,32 @@ export class MailService {
     private transporter: nodemailer.Transporter;
 
     constructor() {
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
-            },
-        });
+        if (process.env.RESEND_API_KEY) {
+            this.transporter = nodemailer.createTransport({
+                host: 'smtp.resend.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: 'resend',
+                    pass: process.env.RESEND_API_KEY,
+                },
+            });
+        } else {
+            this.transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.GMAIL_USER,
+                    pass: (process.env.GMAIL_PASS || '').replace(/\s/g, ''),
+                },
+            });
+        }
+    }
+
+    private get fromEmail(): string {
+        if (process.env.RESEND_API_KEY) {
+            return `"Pusula Oto Kiralama" <noreply@pusulaotakilama.com>`;
+        }
+        return `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`;
     }
 
     async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
@@ -20,7 +39,7 @@ export class MailService {
         const verifyUrl = `${appUrl}/dogrulama?token=${token}`;
 
         await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            from: this.fromEmail,
             to: toEmail,
             subject: 'Pusula Oto Kiralama - E-posta Adresinizi Doğrulayın',
             html: `
@@ -42,13 +61,6 @@ export class MailService {
                                 ✉️ Hesabımı Doğrula
                             </a>
                         </div>
-                        <p style="color: #94a3b8; font-size: 13px; text-align: center;">
-                            Bu link 24 saat geçerlidir. Eğer bu kaydı siz yapmadıysanız bu e-postayı görmezden gelebilirsiniz.
-                        </p>
-                        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
-                        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
-                            📞 +90 553 619 81 64 | ✉️ otokiralamapusula@gmail.com
-                        </p>
                     </div>
                 </div>
             `,
@@ -60,7 +72,7 @@ export class MailService {
         const resetUrl = `${appUrl}/sifre-sifirla?token=${token}`;
 
         await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            from: this.fromEmail,
             to: toEmail,
             subject: 'Pusula Oto Kiralama - Şifre Sıfırlama',
             html: `
@@ -81,13 +93,6 @@ export class MailService {
                                 🔑 Şifremi Sıfırla
                             </a>
                         </div>
-                        <p style="color: #94a3b8; font-size: 13px; text-align: center;">
-                            Bu link 1 saat geçerlidir. Eğer bu talebi siz yapmadıysanız bu e-postayı görmezden gelebilirsiniz.
-                        </p>
-                        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
-                        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
-                            📞 +90 553 619 81 64 | ✉️ otokiralamapusula@gmail.com
-                        </p>
                     </div>
                 </div>
             `,
