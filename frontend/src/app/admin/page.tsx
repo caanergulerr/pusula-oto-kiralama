@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
     }, [])
 
     async function fetchDashboardData() {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pusula-oto-kiralama-production.up.railway.app'
+        const API_URL = '/api'
         try {
             const token = localStorage.getItem('token')
 
