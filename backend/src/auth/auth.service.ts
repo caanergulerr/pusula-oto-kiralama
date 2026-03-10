@@ -80,7 +80,6 @@ export class AuthService {
 
     async forgotPassword(email: string) {
         const user = await this.usersService.findOneByEmail(email);
-        // Güvenlik için: kullanıcı yoksa da aynı mesajı dön
         if (!user) {
             return { message: 'Eğer bu e-posta kayıtlıysa sıfırlama linki gönderildi.' };
         }
@@ -89,11 +88,9 @@ export class AuthService {
         const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 saat
         await this.usersService.setPasswordResetToken(user.id, token, expiry);
 
-        try {
-            await this.mailService.sendPasswordResetEmail(email, token);
-        } catch (err) {
-            console.error('Şifre sıfırlama maili gönderilemedi:', err);
-        }
+        console.log('MAİL GÖNDERME BAŞLADI:', email);
+        await this.mailService.sendPasswordResetEmail(email, token);
+        console.log('MAİL GÖNDERME BAŞARILI:', email);
 
         return { message: 'Eğer bu e-posta kayıtlıysa sıfırlama linki gönderildi.' };
     }
