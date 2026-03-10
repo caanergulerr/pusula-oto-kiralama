@@ -81,7 +81,7 @@ export class MailService {
                         <div style="text-align: center; margin: 32px 0;">
                             <a href="${resetUrl}" 
                                style="background: #2563eb; color: white; padding: 14px 32px; border-radius: 8px; 
-                                      text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
+                                      text-decoration: none; font-weight: bold; font-size: 16px; display: display-block;">
                                 🔑 Şifremi Sıfırla
                             </a>
                         </div>
