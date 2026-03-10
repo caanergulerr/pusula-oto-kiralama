@@ -15,12 +15,16 @@ export class MailService {
         });
     }
 
+    private get fromEmail(): string {
+        return `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`;
+    }
+
     async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
         const appUrl = process.env.APP_URL || 'http://localhost:3001';
         const verifyUrl = `${appUrl}/dogrulama?token=${token}`;
 
         await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            from: this.fromEmail,
             to: toEmail,
             subject: 'Pusula Oto Kiralama - E-posta Adresinizi Doğrulayın',
             html: `
@@ -60,7 +64,7 @@ export class MailService {
         const resetUrl = `${appUrl}/sifre-sifirla?token=${token}`;
 
         await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            from: this.fromEmail,
             to: toEmail,
             subject: 'Pusula Oto Kiralama - Şifre Sıfırlama',
             html: `
