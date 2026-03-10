@@ -36,7 +36,7 @@ export function BookingModal({ car }: BookingModalProps) {
     }
 
     const handleBookingSuccess = async (transactionId: string) => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pusula-oto-kiralama-production.up.railway.app'
+        const API_URL = '/api'
         // Create actual booking
         try {
             const res = await fetch(`${API_URL}/bookings`, {
