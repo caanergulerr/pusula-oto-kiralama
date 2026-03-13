@@ -27,6 +27,12 @@ async function handleProxy(request: NextRequest, pathArray: string[]) {
         : 'http://localhost:3000';
 
     const pathStr = Array.isArray(pathArray) ? pathArray.join('/') : '';
+
+    // send-email rotası bu proxy'den geçmemeli - doğrudan Vercel'in kendi handler'ına gider
+    // Eğer bu yolu proxy yakalasaydı, Railway -> Vercel -> Railway döngüsüne girerdi
+    if (pathStr === 'send-email') {
+        return NextResponse.json({ message: 'Bu rota proxy\'den geçemez.' }, { status: 404 });
+    }
     const query = request.nextUrl.search; // Includes '?'
 
     const targetUrl = `${backendBaseUrl}/${pathStr}${query}`;
