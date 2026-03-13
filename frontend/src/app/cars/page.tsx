@@ -34,7 +34,7 @@ function CarsPageContent() {
     async function fetchCars(filters?: FilterValues) {
         setLoading(true)
         try {
-            const API_URL = '/api'
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
             let url = `${API_URL}/cars`
             if (filters && Object.keys(filters).length > 0) {
                 const params = new URLSearchParams()

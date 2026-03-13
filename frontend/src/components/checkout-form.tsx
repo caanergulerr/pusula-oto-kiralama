@@ -15,7 +15,7 @@ export function CheckoutForm({ amount, onSuccess }: CheckoutFormProps) {
     const elements = useElements()
     const [errorMessage, setErrorMessage] = useState<string>()
     const [loading, setLoading] = useState(false)
-    const API_URL = '/api'
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001'
 
     const handleSubmit = async (event: React.FormEvent) => {
