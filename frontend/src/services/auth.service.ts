@@ -11,7 +11,7 @@ export interface AuthResponse {
     user: User;
 }
 
-const API_URL = '/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export const authService = {
     async register(data: any) {
