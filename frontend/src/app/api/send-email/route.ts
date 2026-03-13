@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 export async function POST(req: Request) {
     try {
@@ -10,24 +10,30 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Eksik parametreler.' }, { status: 400 });
         }
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.NEXT_PUBLIC_GMAIL_USER || 'otokiralamapusula@gmail.com',
-                pass: (process.env.GMAIL_PASS || 'nqifvtyhupxolxna').replace(/\s/g, ''),
-            },
-        });
+        const apiKey = process.env.RESEND_API_KEY;
 
-        const fromEmail = `"Pusula Oto Kiralama" <${process.env.NEXT_PUBLIC_GMAIL_USER || 'otokiralamapusula@gmail.com'}>`;
+        if (!apiKey) {
+            console.error('RESEND_API_KEY environment variable is not set!');
+            return NextResponse.json({ error: 'Mail servisi yapılandırılmamış.' }, { status: 500 });
+        }
 
-        await transporter.sendMail({
-            from: fromEmail,
-            to: toEmail,
+        const resend = new Resend(apiKey);
+
+        const { data, error } = await resend.emails.send({
+            from: 'Pusula Oto Kiralama <onboarding@resend.dev>',
+            to: [toEmail],
             subject: subject,
             html: html,
         });
 
-        return NextResponse.json({ message: 'E-posta basariyla gonderildi.' }, { status: 200 });
+        if (error) {
+            console.error('Resend API hatası:', error);
+            return NextResponse.json({ error: 'E-posta gonderilemedi.', details: error.message }, { status: 500 });
+        }
+
+        console.log('E-posta başarıyla gönderildi (Resend):', data?.id);
+        return NextResponse.json({ message: 'E-posta basariyla gonderildi.', id: data?.id }, { status: 200 });
+
     } catch (error: any) {
         console.error('E-posta gonderim hatasi:', error);
         return NextResponse.json({ error: 'E-posta gonderilemedi.', details: error.message }, { status: 500 });
