@@ -22,11 +22,13 @@ function CarsPageContent() {
         const fuelType = searchParams.get('fuelType')
         const gearType = searchParams.get('gearType')
         const features = searchParams.get('features')
+        const category = searchParams.get('category')
         if (minPrice) initialFilters.minPrice = parseFloat(minPrice)
         if (maxPrice) initialFilters.maxPrice = parseFloat(maxPrice)
         if (fuelType) initialFilters.fuelType = fuelType
         if (gearType) initialFilters.gearType = gearType
         if (features) initialFilters.features = features.split(',')
+        if (category) (initialFilters as any).category = category
         setActiveFilters(initialFilters)
         fetchCars(initialFilters)
     }, [searchParams])
@@ -36,15 +38,17 @@ function CarsPageContent() {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
             let url = `${API_URL}/cars`
-            if (filters && Object.keys(filters).length > 0) {
-                const params = new URLSearchParams()
-                if (filters.minPrice) params.append('minPrice', filters.minPrice.toString())
-                if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString())
-                if (filters.fuelType) params.append('fuelType', filters.fuelType)
-                if (filters.gearType) params.append('gearType', filters.gearType)
-                if (filters.features?.length) params.append('features', filters.features.join(','))
-                url = `${API_URL}/cars/search/filter?${params.toString()}`
+            const params = new URLSearchParams()
+            let hasParams = false
+            if (filters) {
+                if (filters.minPrice) { params.append('minPrice', filters.minPrice.toString()); hasParams = true }
+                if (filters.maxPrice) { params.append('maxPrice', filters.maxPrice.toString()); hasParams = true }
+                if (filters.fuelType) { params.append('fuelType', filters.fuelType); hasParams = true }
+                if (filters.gearType) { params.append('gearType', filters.gearType); hasParams = true }
+                if (filters.features?.length) { params.append('features', filters.features.join(',')); hasParams = true }
+                if ((filters as any).category) { params.append('category', (filters as any).category); hasParams = true }
             }
+            if (hasParams) url = `${API_URL}/cars/search/filter?${params.toString()}`
             const res = await fetch(url)
             if (!res.ok) throw new Error("Failed")
             const data = await res.json()

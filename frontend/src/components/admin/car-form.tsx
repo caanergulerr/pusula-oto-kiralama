@@ -34,7 +34,16 @@ const carSchema = z.object({
     description: z.string().optional(),
     fuelType: z.string().min(1, "Yakıt tipi seçiniz"),
     gearType: z.string().min(1, "Vites tipi seçiniz"),
+    category: z.string().optional(),
 })
+
+const CAR_CATEGORIES = [
+    { value: 'sedan', label: 'Sedan' },
+    { value: 'hatchback', label: 'Hatchback' },
+    { value: 'suv', label: 'SUV' },
+    { value: 'panelvan', label: 'Panelvan' },
+    { value: 'minivan', label: 'Minivan' },
+]
 
 interface CarFormProps {
     initialData?: Car;
@@ -83,6 +92,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
             description: initialData?.description || "",
             fuelType: initialData?.fuelType || "",
             gearType: initialData?.gearType || "",
+            category: (initialData as any)?.category || "",
         },
     })
 
@@ -342,7 +352,27 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             </FormItem>
                         )}
                     />
+
+                    <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Araç Kategorisi</FormLabel>
+                                <FormControl>
+                                    <select {...field} className="w-full px-3 py-2 border rounded-md">
+                                        <option value="">Kategori Seçiniz</option>
+                                        {CAR_CATEGORIES.map(cat => (
+                                            <option key={cat.value} value={cat.value}>{cat.label}</option>
+                                        ))}
+                                    </select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
+
 
                 <FormField
                     control={form.control}
