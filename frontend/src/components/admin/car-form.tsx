@@ -41,7 +41,6 @@ const CAR_CATEGORIES = [
     { value: 'sedan', label: 'Sedan' },
     { value: 'hatchback', label: 'Hatchback' },
     { value: 'suv', label: 'SUV' },
-    { value: 'panelvan', label: 'Panelvan' },
     { value: 'minivan', label: 'Minivan' },
 ]
 
