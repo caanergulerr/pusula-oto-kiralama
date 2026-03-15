@@ -28,7 +28,11 @@ export class Car {
     availableStock: number;
 
     @Column({ nullable: true })
+    category: string; // sedan, hatchback, suv, panelvan, minivan
+
+    @Column({ nullable: true })
     imageUrl: string;
+
 
     @Column({ nullable: true })
     kmLimit: number;

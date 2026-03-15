@@ -29,6 +29,7 @@ export class CarsController {
         @Query('fuelType') fuelType?: string,
         @Query('gearType') gearType?: string,
         @Query('features') features?: string,
+        @Query('category') category?: string,
     ) {
         return this.carsService.searchCars({
             minPrice: minPrice ? parseFloat(minPrice) : undefined,
@@ -36,8 +37,10 @@ export class CarsController {
             fuelType,
             gearType,
             features: features ? features.split(',') : undefined,
+            category,
         });
     }
+
 
     @Get(':id')
     findOne(@Param('id') id: string) {

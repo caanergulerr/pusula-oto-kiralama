@@ -87,6 +87,7 @@ export class CarsService {
         fuelType?: string;
         gearType?: string;
         features?: string[];
+        category?: string;
     }) {
         const query = this.carsRepository.createQueryBuilder('car');
 
@@ -98,17 +99,22 @@ export class CarsService {
             query.andWhere('car.dailyPrice <= :maxPrice', { maxPrice: filters.maxPrice });
         }
 
+        // Category filter
+        if (filters.category) {
+            query.andWhere('car.category = :category', { category: filters.category });
+        }
+
         // Fuel type filter
         if (filters.fuelType) {
-            query.andWhere("JSON_EXTRACT(car.specs, '$.fuelType') = :fuelType", {
-                fuelType: filters.fuelType
+            query.andWhere("car.specs LIKE :fuelType", {
+                fuelType: `%${filters.fuelType}%`
             });
         }
 
         // Gear type filter
         if (filters.gearType) {
-            query.andWhere("JSON_EXTRACT(car.specs, '$.transmission') = :gearType", {
-                gearType: filters.gearType
+            query.andWhere("car.specs LIKE :gearType", {
+                gearType: `%${filters.gearType}%`
             });
         }
 
@@ -129,6 +135,7 @@ export class CarsService {
             status: car.availableStock > 0 ? 'AVAILABLE' : 'RENTED'
         }));
     }
+
 
     async getMostRented(limit: number = 3) {
         // Simple approach: return available cars
