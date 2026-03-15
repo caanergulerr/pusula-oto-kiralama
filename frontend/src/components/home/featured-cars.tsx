@@ -84,11 +84,12 @@ export function FeaturedCars() {
                             href={`/cars?category=${cat.key}`}
                             className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:shadow-lg transition-all duration-200 group cursor-pointer"
                         >
-                            <div className="w-full h-20 flex items-center justify-center overflow-hidden">
+                            <div className="w-full h-16 flex items-center justify-center overflow-hidden">
                                 <img
                                     src={cat.image}
                                     alt={cat.label}
-                                    className="max-h-16 w-auto max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
+                                    style={{ width: '110px', height: '56px', objectFit: 'contain' }}
+                                    className="transition-transform duration-200 group-hover:scale-105"
                                 />
                             </div>
                             <span className="font-bold text-sm uppercase tracking-wide text-slate-700 group-hover:text-blue-600 transition-colors">
