@@ -79,29 +79,25 @@ export function FeaturedCars() {
                 {/* Kategori Kartları */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
                     {CATEGORIES.map((cat) => (
-                        <button
+                        <Link
                             key={cat.key}
-                            onClick={() => handleCategoryClick(cat.key)}
-                            className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all duration-200 group cursor-pointer
-                                ${activeCategory === cat.key
-                                    ? 'border-blue-600 bg-blue-50 shadow-lg shadow-blue-500/20'
-                                    : 'border-slate-200 bg-white hover:border-blue-400 hover:shadow-md'
-                                }`}
+                            href={`/cars?category=${cat.key}`}
+                            className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:shadow-lg transition-all duration-200 group cursor-pointer"
                         >
-                            <div className="w-full h-24 flex items-center justify-center overflow-hidden">
+                            <div className="w-full h-20 flex items-center justify-center overflow-hidden">
                                 <img
                                     src={cat.image}
                                     alt={cat.label}
-                                    className={`h-20 w-full object-contain transition-transform duration-200 group-hover:scale-105 ${activeCategory === cat.key ? 'scale-105' : ''}`}
+                                    className="max-h-16 w-auto max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
                                 />
                             </div>
-                            <span className={`font-bold text-sm uppercase tracking-wide ${activeCategory === cat.key ? 'text-blue-600' : 'text-slate-700'}`}>
+                            <span className="font-bold text-sm uppercase tracking-wide text-slate-700 group-hover:text-blue-600 transition-colors">
                                 {cat.label}
                             </span>
-                            <span className={`text-xs ${activeCategory === cat.key ? 'text-blue-500' : 'text-slate-400'}`}>
+                            <span className="text-xs text-slate-400">
                                 {categoryCounts[cat.key] ?? 0} araç
                             </span>
-                        </button>
+                        </Link>
                     ))}
                 </div>
 
