@@ -65,19 +65,25 @@ export default function CarDetailPage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header band */}
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-28 pb-12">
-                <div className="max-w-6xl mx-auto px-6 lg:px-10">
-                    <Link href="/cars" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 group">
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-28 pb-0 relative">
+                <div className="max-w-6xl mx-auto px-6 lg:px-10 pb-16">
+                    <Link href="/cars" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 group relative z-10">
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         Araçlara Dön
                     </Link>
-                    <h1 className="text-4xl font-bold text-white">{car.brand} {car.model}</h1>
-                    <div className="flex items-center gap-3 mt-3">
+                    <h1 className="text-4xl font-bold text-white relative z-10">{car.brand} {car.model}</h1>
+                    <div className="flex items-center gap-3 mt-3 relative z-10">
                         <span className="px-3 py-1 bg-white/10 text-slate-300 rounded-full text-sm font-medium">{car.year}</span>
                         <span className={`px-3 py-1 rounded-full text-sm font-bold ${isAvailable ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}`}>
                             {isAvailable ? '✓ Müsait' : '✗ Dolu'}
                         </span>
                     </div>
+                </div>
+                {/* Dalga Geçişi */}
+                <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none z-0">
+                    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
+                        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8fafc" />
+                    </svg>
                 </div>
             </div>
 

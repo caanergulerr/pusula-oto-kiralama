@@ -14,9 +14,9 @@ export default function IletisimPage() {
     return (
         <div className="min-h-screen bg-white">
             {/* Hero */}
-            <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-24 relative overflow-hidden">
+            <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-6 relative overflow-hidden">
                 <div className="absolute top-20 right-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
-                <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+                <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 pb-16">
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
                         <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-6">
                             Bize Ulaşın
@@ -27,9 +27,9 @@ export default function IletisimPage() {
                         </p>
                     </motion.div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0">
-                    <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 60L1440 60L1440 30C1200 60 960 0 720 15C480 30 240 60 0 30L0 60Z" fill="white" />
+                <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
+                    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
+                        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#ffffff" />
                     </svg>
                 </div>
             </section>

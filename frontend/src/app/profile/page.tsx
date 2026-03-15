@@ -59,10 +59,16 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-28 pb-16">
-                <div className="max-w-7xl mx-auto px-6 lg:px-10">
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-28 pb-0 relative">
+                <div className="max-w-7xl mx-auto px-6 lg:px-10 pb-16 relative z-10">
                     <h1 className="text-4xl font-bold text-white mb-1">Hesabım</h1>
                     <p className="text-slate-400">Profil bilgilerinizi ve kiralama geçmişinizi görüntüleyin.</p>
+                </div>
+                {/* Dalga Geçişi */}
+                <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none z-0">
+                    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
+                        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8fafc" />
+                    </svg>
                 </div>
             </div>
 

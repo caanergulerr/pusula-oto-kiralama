@@ -23,9 +23,9 @@ export default function HaberlerPage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-20 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-0 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5"></div>
-                <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+                <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 pb-16">
                     <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-blue-400/20">
                         <Newspaper className="h-4 w-4" />
                         Güncel Gelişmeler
@@ -36,6 +36,11 @@ export default function HaberlerPage() {
                     <p className="text-xl text-slate-300 max-w-2xl leading-relaxed">
                         Pusula Oto Kiralama ile ilgili en son haberler, yeni eklenen araçlar ve özel kampanyalardan ilk siz haberdar olun.
                     </p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none z-10">
+                    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
+                        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8fafc" />
+                    </svg>
                 </div>
             </div>
 
