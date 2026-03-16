@@ -77,25 +77,25 @@ export function FeaturedCars() {
         <section className="bg-slate-50 py-24">
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
                 {/* Kategori Kartları */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-8 sm:mb-12">
                     {CATEGORIES.map((cat) => (
                         <Link
                             key={cat.key}
                             href={`/cars?category=${cat.key}`}
-                            className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:shadow-lg transition-all duration-200 group cursor-pointer"
+                            className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:shadow-lg transition-all duration-200 group cursor-pointer"
                         >
-                            <div className="w-full h-24 flex items-center justify-center overflow-hidden">
+                            <div className="w-full h-16 sm:h-24 flex items-center justify-center overflow-hidden">
                                 <img
                                     src={cat.image}
                                     alt={cat.label}
-                                    style={{ width: '200px', height: '100px', objectFit: 'contain' }}
-                                    className="transition-transform duration-200 group-hover:scale-110"
+                                    className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-110"
+                                    style={{ maxWidth: '200px' }}
                                 />
                             </div>
-                            <span className="font-bold text-sm uppercase tracking-wide text-slate-700 group-hover:text-blue-600 transition-colors">
+                            <span className="font-bold text-xs sm:text-sm uppercase tracking-wide text-slate-700 group-hover:text-blue-600 transition-colors text-center">
                                 {cat.label}
                             </span>
-                            <span className="text-xs text-slate-400">
+                            <span className="text-[10px] sm:text-xs text-slate-400">
                                 {categoryCounts[cat.key] ?? 0} araç
                             </span>
                         </Link>
