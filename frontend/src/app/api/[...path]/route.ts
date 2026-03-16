@@ -1,30 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { path: string[] } }) {
-    return handleProxy(request, params.path);
+export async function GET(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = await params;
+    return handleProxy(request, path);
 }
 
-export async function POST(request: NextRequest, { params }: { params: { path: string[] } }) {
-    return handleProxy(request, params.path);
+export async function POST(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = await params;
+    return handleProxy(request, path);
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { path: string[] } }) {
-    return handleProxy(request, params.path);
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = await params;
+    return handleProxy(request, path);
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { path: string[] } }) {
-    return handleProxy(request, params.path);
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = await params;
+    return handleProxy(request, path);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { path: string[] } }) {
-    return handleProxy(request, params.path);
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = await params;
+    return handleProxy(request, path);
 }
 
 async function handleProxy(request: NextRequest, pathArray: string[]) {
     const isProduction = process.env.NODE_ENV === 'production';
-    const backendBaseUrl = isProduction
-        ? 'https://pusula-oto-kiralama-production.up.railway.app'
-        : 'http://localhost:3000';
+    const backendBaseUrl = 'http://localhost:3000';
 
     const pathStr = Array.isArray(pathArray) ? pathArray.join('/') : '';
 
