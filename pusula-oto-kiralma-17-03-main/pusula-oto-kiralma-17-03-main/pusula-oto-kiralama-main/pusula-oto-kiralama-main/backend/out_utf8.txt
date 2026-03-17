@@ -1,0 +1,114 @@
+
+> backend@0.0.1 start
+> nest start
+
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +18ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mThrottlerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20352  - [39m17.03.2026 21:18:18 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+
+
+[31m[Nest] 20352  - [39m17.03.2026 21:18:18 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (1)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:21 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (2)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:24 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (3)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:27 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (4)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:30 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (5)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:33 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (6)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:36 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (7)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:39 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (8)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:42 [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (9)...[39m
+DataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18)
+    at <anonymous> (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18)
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25)
+    at DataSource.buildMetadatas (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:753:33)
+    at async DataSource.initialize (C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\node_modules\typeorm\data-source\src\data-source\DataSource.ts:264:13)
+[31m[Nest] 20352  - [39m17.03.2026 21:18:42 [31m  ERROR[39m [38;5;3m[ExceptionHandler] [39mDataTypeNotSupportedError: Data type "timestamp" in "User.passwordResetExpiry" is not supported by "sqlite" database.
+    at <anonymous> [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:133:31[90m)[39m
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validate [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:128:18[90m)[39m
+    at <anonymous> [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:43:18[90m)[39m
+    at Array.forEach (<anonymous>)
+    at EntityMetadataValidator.validateMany [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\metadata-builder\src\metadata-builder\EntityMetadataValidator.ts:42:25[90m)[39m
+    at DataSource.buildMetadatas [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\data-source\src\data-source\DataSource.ts:753:33[90m)[39m
+    at async DataSource.initialize [90m(C:\Users\gungo\OneDrive\Masaüstü\pusula-oto-kiralama-main\pusula-oto-kiralama-main\backend\[39mnode_modules\[4mtypeorm[24m\data-source\src\data-source\DataSource.ts:264:13[90m)[39m
