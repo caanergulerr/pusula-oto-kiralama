@@ -39,10 +39,16 @@ export function FeaturedCars() {
     useEffect(() => {
         async function fetchCars() {
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-                const res = await fetch(`${API_URL}/cars`)
                 const data = await carService.getCars()
                 setCars(data.slice(0, 3))
+                setAllCars(data)
+                
+                // Kategori sayılarını hesapla
+                const counts: Record<string, number> = {}
+                CATEGORIES.forEach(cat => {
+                    counts[cat.key] = data.filter((c: any) => c.category === cat.key).length
+                })
+                setCategoryCounts(counts)
             } catch (error) {
                 console.error('Error fetching cars:', error)
             } finally {
