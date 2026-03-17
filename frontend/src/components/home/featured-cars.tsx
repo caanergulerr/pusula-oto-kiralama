@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { CarCard } from "./car-card"
 import { ArrowRight, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { carService, Car } from "@/services/car.service"
 
 const CATEGORIES = [
     {
@@ -40,20 +41,10 @@ export function FeaturedCars() {
             try {
                 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
                 const res = await fetch(`${API_URL}/cars`)
-                if (!res.ok) throw new Error("Failed to fetch")
-                const data = await res.json()
-                const available = data.filter((c: any) => c.availableStock > 0)
-                setAllCars(available)
-                setCars(available.slice(0, 3))
-
-                // Kategori sayılarını hesapla
-                const counts: Record<string, number> = {}
-                CATEGORIES.forEach(cat => {
-                    counts[cat.key] = available.filter((c: any) => c.category === cat.key).length
-                })
-                setCategoryCounts(counts)
+                const data = await carService.getCars()
+                setCars(data.slice(0, 3))
             } catch (error) {
-                console.error(error)
+                console.error('Error fetching cars:', error)
             } finally {
                 setLoading(false)
             }

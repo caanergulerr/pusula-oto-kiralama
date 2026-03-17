@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import Image from "next/image"
 import { Fuel, Gauge, Settings2, Users, Phone, ArrowLeft, CheckCircle, Shield, Star } from "lucide-react"
 import Link from "next/link"
+import { carService, Car } from "@/services/car.service"
 
 const FEATURE_LABELS: Record<string, string> = {
     gps: 'GPS Navigasyon',
@@ -19,15 +20,13 @@ const FEATURE_LABELS: Record<string, string> = {
 
 export default function CarDetailPage() {
     const { id } = useParams()
-    const [car, setCar] = useState<any>(null)
+    const [car, setCar] = useState<Car | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchCar() {
             try {
-                const res = await fetch(`http://localhost:3000/cars/${id}`)
-                if (!res.ok) throw new Error("Failed to fetch")
-                const data = await res.json()
+                const data = await carService.getCar(id as string)
                 if (data.specs && typeof data.specs === 'string') {
                     try { data.parsedSpecs = JSON.parse(data.specs) } catch { data.parsedSpecs = {} }
                 }
@@ -60,7 +59,7 @@ export default function CarDetailPage() {
 
     const specs = car.parsedSpecs || {}
     const features = car.parsedFeatures || []
-    const isAvailable = car.availableStock > 0
+    const isAvailable = (car.availableStock ?? 0) > 0
 
     return (
         <div className="min-h-screen bg-slate-50">

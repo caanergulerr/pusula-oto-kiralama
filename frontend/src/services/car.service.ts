@@ -1,5 +1,5 @@
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_URL = '/api';
 
 export interface Car {
     id: string;
@@ -18,6 +18,10 @@ export interface Car {
     plateNumber?: string;
     totalStock?: number;
     availableStock?: number;
+    category?: string;
+    // UI specific parsed fields
+    parsedSpecs?: any;
+    parsedFeatures?: any;
 }
 
 export const carService = {

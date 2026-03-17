@@ -4,13 +4,14 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { CarCard } from "@/components/home/car-card"
 import { CarFilters, FilterValues } from "@/components/cars/car-filters"
-import { Filter, X, Car } from "lucide-react"
+import { Filter, X, Car as CarIcon } from "lucide-react" // Renamed Car to CarIcon to avoid conflict with type Car
+import { carService, Car } from "@/services/car.service" // Import carService and Car type
 
 import { Suspense } from "react"
 
 function CarsPageContent() {
     const searchParams = useSearchParams()
-    const [cars, setCars] = useState<any[]>([])
+    const [cars, setCars] = useState<Car[]>([])
     const [loading, setLoading] = useState(true)
     const [showFilters, setShowFilters] = useState(false)
     const [activeFilters, setActiveFilters] = useState<FilterValues>({})
@@ -36,26 +37,23 @@ function CarsPageContent() {
     async function fetchCars(filters?: FilterValues) {
         setLoading(true)
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-            let url = `${API_URL}/cars`
-            const params = new URLSearchParams()
-            let hasParams = false
+            const data = await carService.getCars()
+            let filtered = [...data]
+            
             if (filters) {
-                if (filters.minPrice) { params.append('minPrice', filters.minPrice.toString()); hasParams = true }
-                if (filters.maxPrice) { params.append('maxPrice', filters.maxPrice.toString()); hasParams = true }
-                if (filters.fuelType) { params.append('fuelType', filters.fuelType); hasParams = true }
-                if (filters.gearType) { params.append('gearType', filters.gearType); hasParams = true }
-                if (filters.features?.length) { params.append('features', filters.features.join(',')); hasParams = true }
-                if ((filters as any).category) { params.append('category', (filters as any).category); hasParams = true }
+                if (filters.minPrice) filtered = filtered.filter(c => c.dailyPrice >= (filters.minPrice ?? 0))
+                if (filters.maxPrice) filtered = filtered.filter(c => c.dailyPrice <= (filters.maxPrice ?? Infinity))
+                if (filters.fuelType) filtered = filtered.filter(c => c.fuelType === filters.fuelType)
+                if (filters.gearType) filtered = filtered.filter(c => c.gearType === filters.gearType)
+                if ((filters as any).category) filtered = filtered.filter(c => c.category === (filters as any).category)
             }
-            if (hasParams) url = `${API_URL}/cars/search/filter?${params.toString()}`
-            const res = await fetch(url)
-            if (!res.ok) throw new Error("Failed")
-            const data = await res.json()
             // Sadece müsait araçları göster
-            setCars(data.filter((c: any) => c.availableStock > 0))
-        } catch (e) { console.error(e) }
-        finally { setLoading(false) }
+            setCars(filtered.filter((c: Car) => (c.availableStock ?? 0) > 0))
+        } catch (error) {
+            console.error('Error fetching cars:', error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleFilterChange = (filters: FilterValues) => {
@@ -134,7 +132,7 @@ function CarsPageContent() {
                             </div>
                         ) : cars.length === 0 ? (
                             <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center">
-                                <Car className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                                <CarIcon className="h-16 w-16 text-slate-300 mx-auto mb-4" />
                                 <h3 className="text-xl font-bold text-slate-700 mb-2">Araç Bulunamadı</h3>
                                 <p className="text-slate-400 mb-6">Filtreleri değiştirmeyi deneyin.</p>
                                 <button onClick={() => handleFilterChange({})} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all">
