@@ -11,10 +11,18 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'www.peugeot.com.tr' },
       { protocol: 'https', hostname: 'www.ford.com.tr' },
       { protocol: 'https', hostname: 'www.honda.com.tr' },
-      { protocol: 'https', hostname: 'images.pexels.com' }, // existing or potential
+      { protocol: 'https', hostname: 'images.pexels.com' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3000/:path*',
+      },
+    ];
   },
 };
 
