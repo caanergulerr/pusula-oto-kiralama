@@ -1,93 +1,59 @@
-// Bu script sqlite3 modülü kullanır (backend'in asıl bağımlılığı)
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const dbPath = path.join(__dirname, 'data', 'database.sqlite');
-console.log('Veritabanı:', dbPath);
-
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('DB açılamadı:', err.message);
-    process.exit(1);
-  }
-  console.log('✅ Veritabanı açıldı');
-});
+const db = new sqlite3.Database(dbPath);
 
 async function run() {
-  // Tabloları listele
-  await new Promise((res) => {
-    db.all("SELECT name FROM sqlite_master WHERE type='table'", [], (err, rows) => {
-      if (err) console.error(err);
-      else console.log('Tablolar:', rows.map(r => r.name));
-      res();
-    });
-  });
-
-  // Kullanıcıları listele (her iki tablo adını dene)
-  const tableName = await new Promise((res) => {
-    db.all('SELECT id, email, role FROM "user" LIMIT 5', [], (err, rows) => {
-      if (err) {
-        db.all('SELECT id, email, role FROM users LIMIT 5', [], (err2, rows2) => {
-          if (err2) { console.error('Kullanıcı tablosu bulunamadı'); res(null); }
-          else { console.log('Kullanıcılar (users):', rows2); res('users'); }
-        });
-      } else {
-        console.log('Kullanıcılar (user):', rows);
-        res('user');
-      }
-    });
-  });
-
-  if (!tableName) {
-    console.error('Hiç kullanıcı tablosu bulunamadı!');
-    db.close();
-    return;
-  }
-
-  // Bcrypt hash oluştur
   const hash = await bcrypt.hash('Pusula2024!', 10);
-  console.log('\nŞifre hash oluşturuldu');
+  const id = uuidv4();
 
-  // Admin güncelle
-  const updateSql = `UPDATE "${tableName}" SET password_hash = ?, role = 'ADMIN', is_email_verified = 1 WHERE email = 'caaner.gulerr@gmail.com'`;
+  // Admin kullanıcı ekle
   await new Promise((res) => {
-    db.run(updateSql, [hash], function(err) {
+    db.run(`
+      INSERT OR REPLACE INTO users 
+        (id, email, password_hash, full_name, role, phone, is_email_verified, verification_token, password_reset_token, password_reset_expiry, created_at, updated_at)
+      VALUES 
+        (?, 'caaner.gulerr@gmail.com', ?, 'Admin', 'ADMIN', NULL, 1, NULL, NULL, NULL, datetime('now'), datetime('now'))
+    `, [id, hash], function(err) {
       if (err) {
-        console.error('Güncelleme hatası:', err.message);
-      } else if (this.changes === 0) {
-        console.log('Admin bulunamadı, oluşturuluyor...');
-        const insertSql = `INSERT INTO "${tableName}" (email, password_hash, role, is_email_verified) VALUES (?, ?, 'ADMIN', 1)`;
-        db.run(insertSql, ['caaner.gulerr@gmail.com', hash], function(err2) {
-          if (err2) console.error('Oluşturma hatası:', err2.message);
-          else console.log('✅ Admin oluşturuldu! ID:', this.lastID);
-        });
+        console.error('INSERT hatası:', err.message);
+        // Belki zaten var, güncellemeyi dene
+        db.run(`UPDATE users SET password_hash = ?, role = 'ADMIN', is_email_verified = 1 WHERE email = 'caaner.gulerr@gmail.com'`,
+          [hash], function(err2) {
+            if (err2) console.error('UPDATE hatası:', err2.message);
+            else console.log('✅ Admin güncellendi, satır:', this.changes);
+            res();
+          });
       } else {
-        console.log('✅ Admin güncellendi! Değişen satır:', this.changes);
+        console.log('✅ Admin oluşturuldu! Satır ID:', this.lastID);
+        res();
       }
+    });
+  });
+
+  // Kontrol et
+  await new Promise((res) => {
+    db.all('SELECT id, email, role, is_email_verified FROM users', [], (err, rows) => {
+      console.log('Kullanıcılar:', rows);
       res();
     });
   });
 
-  // Araçları say
+  // Araç sayısı
   await new Promise((res) => {
-    db.all('SELECT COUNT(*) as count FROM car', [], (err, rows) => {
-      if (err) db.all('SELECT COUNT(*) as count FROM cars', [], (err2, rows2) => {
-        if (!err2) console.log('Araç sayısı:', rows2[0]?.count);
-        res();
-      });
-      else { console.log('Araç sayısı:', rows[0]?.count); res(); }
+    db.all('SELECT COUNT(*) as count FROM cars', [], (err, rows) => {
+      console.log('Araç sayısı:', rows?.[0]?.count);
+      res();
     });
   });
 
-  console.log('\n✅ İşlem tamamlandı!');
+  console.log('\n✅ Bitti!');
   console.log('Email: caaner.gulerr@gmail.com');
   console.log('Şifre: Pusula2024!');
-
   db.close();
 }
 
-run().catch(err => {
-  console.error('Hata:', err);
-  db.close();
-});
+run().catch(e => { console.error(e); db.close(); });
