@@ -146,7 +146,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 formData.append('file', imageFile)
 
                 const token = localStorage.getItem('token')
-                const uploadRes = await fetch('http://127.0.0.1:3000/cars/upload', {
+                const uploadRes = await fetch('/api/cars/upload', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
