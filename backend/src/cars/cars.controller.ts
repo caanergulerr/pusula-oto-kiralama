@@ -73,7 +73,7 @@ export class CarsController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
-            destination: join(__dirname, '../../../frontend/public/cars'),
+            destination: join(__dirname, '../../../frontend/public/uploads'),
             filename: (req, file, cb) => {
                 const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
                 cb(null, `${randomName}${extname(file.originalname)}`);
@@ -89,7 +89,7 @@ export class CarsController {
     uploadFile(@UploadedFile() file: Express.Multer.File) {
         return {
             filename: file.filename,
-            path: `/cars/${file.filename}`
+            path: `/uploads/${file.filename}`
         };
     }
 }
