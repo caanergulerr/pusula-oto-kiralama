@@ -99,6 +99,7 @@ export default function CarDetailPage() {
                                         src={car.imageUrl}
                                         alt={`${car.brand} ${car.model}`}
                                         fill
+                                        unoptimized
                                         className="object-contain p-8"
                                         style={{ mixBlendMode: 'multiply' }}
                                         priority

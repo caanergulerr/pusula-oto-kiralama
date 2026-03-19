@@ -52,8 +52,23 @@ export class CarsService {
     }
 
     async update(id: string, updateCarDto: any) {
-        const car = await this.findOne(id);
-        Object.assign(car, updateCarDto);
+        const car = await this.carsRepository.findOneBy({ id });
+        if (!car) {
+            throw new NotFoundException(`Car with ID ${id} not found`);
+        }
+        
+        // fuelType ve gearType varsa specs'e de yaz
+        const { fuelType, gearType, ...rest } = updateCarDto;
+        if (fuelType || gearType) {
+            const currentSpecs = car.specs ? JSON.parse(car.specs) : {};
+            car.specs = JSON.stringify({
+                ...currentSpecs,
+                ...(fuelType && { fuelType }),
+                ...(gearType && { transmission: gearType }),
+            });
+        }
+        
+        Object.assign(car, rest);
         return this.carsRepository.save(car);
     }
 

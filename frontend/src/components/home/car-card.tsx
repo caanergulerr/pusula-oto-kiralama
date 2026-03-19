@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { Fuel, Users, Cog, ArrowRight, Phone } from "lucide-react"
 
 interface CarCardProps {
@@ -23,19 +24,22 @@ export function CarCard({ car }: CarCardProps) {
     try { specs = car.specs ? JSON.parse(car.specs) : {} } catch { specs = {} }
 
     const isAvailable = car.availableStock !== undefined ? car.availableStock > 0 : car.status === 'AVAILABLE'
+    const [imgError, setImgError] = useState(false)
 
     return (
         <Link href={`/cars/${car.id}`} className="block group">
             <div className="bg-white rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 overflow-hidden cursor-pointer">
                 {/* Image */}
                 <div className="relative h-48 bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
-                    {car.imageUrl ? (
+                    {car.imageUrl && !imgError ? (
                         <Image
                             src={car.imageUrl}
                             alt={`${car.brand} ${car.model}`}
                             fill
+                            unoptimized
                             className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
                             style={{ mixBlendMode: 'multiply' }}
+                            onError={() => setImgError(true)}
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-5xl">🚗</div>
