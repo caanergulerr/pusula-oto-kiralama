@@ -15,7 +15,7 @@ export function Hero() {
                     muted
                     loop
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover object-top"
                 >
                     <source src="/hero-video.mp4" type="video/mp4" />
                 </video>
@@ -27,7 +27,7 @@ export function Hero() {
             <div className="hidden md:block absolute bottom-1/4 left-1/4 w-72 h-72 bg-sky-400/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Content */}
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-28 pb-32 w-full flex flex-col justify-center min-h-[90vh]">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-20 sm:pt-28 pb-24 sm:pb-32 w-full flex flex-col justify-center min-h-[90vh]">
                 <div className="max-w-3xl mb-12">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

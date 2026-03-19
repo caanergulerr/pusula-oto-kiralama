@@ -64,16 +64,16 @@ export default function CarDetailPage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header band */}
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-28 pb-0 relative">
-                <div className="max-w-6xl mx-auto px-6 lg:px-10 pb-16">
-                    <Link href="/cars" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 group relative z-10">
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-24 sm:pt-28 pb-0 relative">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 pb-12 sm:pb-16">
+                    <Link href="/cars" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 sm:mb-6 group relative z-10">
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         Araçlara Dön
                     </Link>
-                    <h1 className="text-4xl font-bold text-white relative z-10">{car.brand} {car.model}</h1>
-                    <div className="flex items-center gap-3 mt-3 relative z-10">
-                        <span className="px-3 py-1 bg-white/10 text-slate-300 rounded-full text-sm font-medium">{car.year}</span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${isAvailable ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}`}>
+                    <h1 className="text-2xl sm:text-4xl font-bold text-white relative z-10">{car.brand} {car.model}</h1>
+                    <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-3 relative z-10">
+                        <span className="px-2.5 py-1 bg-white/10 text-slate-300 rounded-full text-xs sm:text-sm font-medium">{car.year}</span>
+                        <span className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold ${isAvailable ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}`}>
                             {isAvailable ? '✓ Müsait' : '✗ Dolu'}
                         </span>
                     </div>
@@ -111,17 +111,17 @@ export default function CarDetailPage() {
                         </div>
 
                         {/* Spec cards */}
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                             {[
                                 { icon: Settings2, label: 'Vites', value: specs.transmission || specs.gear || 'Otomatik' },
                                 { icon: Fuel, label: 'Yakıt', value: specs.fuelType || specs.fuel || 'Benzin' },
                                 { icon: Users, label: 'Koltuk', value: `${specs.seats || 5} Kişi` },
                                 { icon: Gauge, label: 'Limit', value: `${car.kmLimit || 150} km` },
                             ].map(({ icon: Icon, label, value }) => (
-                                <div key={label} className="bg-white rounded-xl border border-slate-200 p-4 text-center shadow-sm">
-                                    <Icon className="h-5 w-5 text-blue-500 mx-auto mb-2" />
+                                <div key={label} className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 text-center shadow-sm">
+                                    <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 mx-auto mb-1.5" />
                                     <p className="text-xs text-slate-400 font-medium mb-0.5">{label}</p>
-                                    <p className="text-sm font-bold text-slate-700 leading-tight">{value}</p>
+                                    <p className="text-xs sm:text-sm font-bold text-slate-700 leading-tight break-words">{value}</p>
                                 </div>
                             ))}
                         </div>
