@@ -60,11 +60,11 @@ const AVAILABLE_FEATURES = [
     { id: 'leatherSeats', label: 'Deri Koltuk' },
 ]
 
-// Backend'den gelen /uploads/... URL'lerini /api/uploads/... olarak düzelt
+// Backend dosyaları frontend/public/cars/ klasörüne kaydediyor
+// Bu yüzden URL formatı /cars/filename.jpg ve direkt servis ediliyor
 function toDisplayUrl(url: string | undefined): string {
     if (!url) return ""
-    if (url.startsWith('/uploads/')) return `/api${url}`
-    return url
+    return url  // Zaten /cars/... formatında, Next.js public'ten direkt servis eder
 }
 
 export function CarForm({ initialData, onSubmit }: CarFormProps) {
@@ -166,9 +166,9 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 }
 
                 const uploadData = await uploadRes.json()
-                // Backend /uploads/... dönüyor, biz /api/uploads/... kaydediyoruz
-                const rawPath: string = uploadData.path || uploadData.url || uploadData.imageUrl || ''
-                imageUrl = rawPath.startsWith('/uploads/') ? `/api${rawPath}` : rawPath
+                // Backend { path: "/cars/filename.jpg" } dönüyor
+                // Dosyalar frontend/public/cars/ klasöründe olduğu için direkt /cars/... URL'si geçerli
+                imageUrl = uploadData.path || uploadData.url || uploadData.imageUrl || ''
             }
 
             await onSubmit({

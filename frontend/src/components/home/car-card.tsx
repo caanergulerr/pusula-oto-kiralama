@@ -24,19 +24,14 @@ export function CarCard({ car }: CarCardProps) {
 
     const isAvailable = car.availableStock !== undefined ? car.availableStock > 0 : car.status === 'AVAILABLE'
 
-    // Backend /uploads/ URL'lerini /api/uploads/ olarak düzelt
-    const displayImageUrl = car.imageUrl?.startsWith('/uploads/')
-        ? `/api${car.imageUrl}`
-        : car.imageUrl
-
     return (
         <Link href={`/cars/${car.id}`} className="block group">
             <div className="bg-white rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 overflow-hidden cursor-pointer">
                 {/* Image */}
                 <div className="relative h-48 bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
-                    {displayImageUrl ? (
+                    {car.imageUrl ? (
                         <Image
-                            src={displayImageUrl}
+                            src={car.imageUrl}
                             alt={`${car.brand} ${car.model}`}
                             fill
                             className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"

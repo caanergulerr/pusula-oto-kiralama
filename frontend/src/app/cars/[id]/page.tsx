@@ -96,7 +96,7 @@ export default function CarDetailPage() {
                             {car.imageUrl ? (
                                 <div className="relative w-full h-full bg-white">
                                     <Image
-                                        src={car.imageUrl.startsWith('/uploads/') ? `/api${car.imageUrl}` : car.imageUrl}
+                                        src={car.imageUrl}
                                         alt={`${car.brand} ${car.model}`}
                                         fill
                                         className="object-contain p-8"
