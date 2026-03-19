@@ -60,11 +60,18 @@ const AVAILABLE_FEATURES = [
     { id: 'leatherSeats', label: 'Deri Koltuk' },
 ]
 
+// Backend'den gelen /uploads/... URL'lerini /api/uploads/... olarak düzelt
+function toDisplayUrl(url: string | undefined): string {
+    if (!url) return ""
+    if (url.startsWith('/uploads/')) return `/api${url}`
+    return url
+}
+
 export function CarForm({ initialData, onSubmit }: CarFormProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [imageFile, setImageFile] = useState<File | null>(null)
-    const [imagePreview, setImagePreview] = useState<string>(initialData?.imageUrl || "")
+    const [imagePreview, setImagePreview] = useState<string>(toDisplayUrl(initialData?.imageUrl))
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>(() => {
         if (initialData?.features) {
             try {
@@ -159,7 +166,9 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 }
 
                 const uploadData = await uploadRes.json()
-                imageUrl = uploadData.path
+                // Backend /uploads/... dönüyor, biz /api/uploads/... kaydediyoruz
+                const rawPath: string = uploadData.path || uploadData.url || uploadData.imageUrl || ''
+                imageUrl = rawPath.startsWith('/uploads/') ? `/api${rawPath}` : rawPath
             }
 
             await onSubmit({
