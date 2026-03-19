@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.pexels.com' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'elazigotokiralamapusula.com' },
+      { protocol: 'https', hostname: 'www.elazigotokiralamapusula.com' },
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'http', hostname: '156.67.27.14' },
     ],
   },
   async rewrites() {
