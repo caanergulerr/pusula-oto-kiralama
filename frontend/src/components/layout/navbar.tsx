@@ -168,8 +168,8 @@ export function Navbar() {
 
             {/* Mobile Menu */}
             {mobileOpen && (
-                <div className="md:hidden bg-white border-t border-slate-100 shadow-lg max-h-[80vh] overflow-y-auto w-full">
-                    <div className="px-6 py-4 space-y-3">
+                <div className="md:hidden bg-white border-t border-slate-100 shadow-lg overflow-y-auto w-full" style={{maxHeight: 'calc(100vh - 64px)'}}>
+                    <div className="px-6 py-4 pb-28 space-y-3">
                         <Link href="/" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">Anasayfa</Link>
                         <Link href="/cars" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">Araçlar</Link>
 
