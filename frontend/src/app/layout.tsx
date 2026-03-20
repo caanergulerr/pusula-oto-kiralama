@@ -78,6 +78,7 @@ export default function RootLayout({
   return (
     <html lang="tr" suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="t2Fnwo6VdGcEyJf0-Q5MlbBcWo-Dig-tY2m5VMdI8I0" />
         {/* Local Business Schema - Google'a işletme bilgilerini iletir */}
         <script
           type="application/ld+json"
