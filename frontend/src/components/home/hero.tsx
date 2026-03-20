@@ -27,7 +27,7 @@ export function Hero() {
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-20 sm:pt-28 pb-24 sm:pb-32 w-full flex flex-col justify-center min-h-[90vh]">
                 <div className="max-w-3xl mb-12">
                     {/* Badge */}
-                    <div className="hero-item-1 inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-6 backdrop-blur-sm">
+                    <div className="hero-item-1 inline-flex items-center gap-2 bg-blue-500/30 border border-blue-400/40 text-blue-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-6">
                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400 rounded-full animate-pulse" />
                         Elazığ'ın En Güvenilir Araç Kiralama Hizmeti
                     </div>
@@ -51,7 +51,7 @@ export function Hero() {
                             </button>
                         </Link>
                         <a href="tel:+905536198164" className="w-full sm:w-auto">
-                            <button className="flex items-center justify-center gap-2 w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl backdrop-blur-sm transition-all text-base sm:text-lg">
+                            <button className="flex items-center justify-center gap-2 w-full bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl transition-all text-base sm:text-lg">
                                 <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                                 Hemen Ara
                             </button>
