@@ -1,6 +1,3 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { Shield, Star, Users, Clock, Award, Heart, CheckCircle } from "lucide-react"
 
 const stats = [
@@ -33,7 +30,7 @@ export default function HakkimizdaPage() {
             <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-6 relative overflow-hidden">
                 <div className="absolute top-20 right-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
                 <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 pb-16">
-                    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+                    <div>
                         <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-6">
                             Pusula Oto Kiralama
                         </div>
@@ -42,7 +39,7 @@ export default function HakkimizdaPage() {
                             Pusula Oto Kiralama olarak Elazığ'da güvenilir,
                             konforlu ve uygun fiyatlı araç kiralama hizmeti sunuyoruz.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
                     <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
@@ -56,17 +53,14 @@ export default function HakkimizdaPage() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-10">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {stats.map((stat, i) => (
-                            <motion.div
+                            <div
                                 key={stat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: i * 0.1 }}
                                 className={`text-center p-6 rounded-2xl border ${stat.color} hover:shadow-lg transition-all`}
                             >
                                 <stat.icon className="h-7 w-7 mx-auto mb-3" />
                                 <div className="text-4xl font-bold mb-1">{stat.value}</div>
                                 <div className="text-slate-500 font-medium text-sm">{stat.label}</div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -108,11 +102,8 @@ export default function HakkimizdaPage() {
                     </div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {values.map((v, i) => (
-                            <motion.div
+                            <div
                                 key={v.title}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: i * 0.1 }}
                                 className="p-6 rounded-2xl border border-slate-200 hover:shadow-lg hover:border-blue-200 transition-all group"
                             >
                                 <div className={`inline-flex items-center justify-center w-12 h-12 ${v.bg} rounded-xl mb-4`}>
@@ -120,7 +111,7 @@ export default function HakkimizdaPage() {
                                 </div>
                                 <h3 className="text-xl font-bold text-slate-800 mb-2">{v.title}</h3>
                                 <p className="text-slate-500 leading-relaxed text-sm">{v.description}</p>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>

@@ -1,6 +1,3 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { Phone, MapPin, Clock, Mail, MessageCircle } from "lucide-react"
 
 const contactInfo = [
@@ -17,7 +14,7 @@ export default function IletisimPage() {
             <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 pt-32 pb-6 relative overflow-hidden">
                 <div className="absolute top-20 right-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
                 <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 pb-16">
-                    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+                    <div>
                         <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-6">
                             Bize Ulaşın
                         </div>
@@ -25,7 +22,7 @@ export default function IletisimPage() {
                         <p className="text-xl text-slate-300 max-w-2xl leading-relaxed">
                             Sorularınız için bize ulaşın. 7/24 müşteri hizmetlerimiz ile her zaman yanınızdayız.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
                     <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12 block">
@@ -40,10 +37,7 @@ export default function IletisimPage() {
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                         {contactInfo.map((info, i) => {
                             const Card = (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                                <div
                                     className={`p-6 rounded-2xl border ${info.color} hover:shadow-lg transition-all cursor-pointer`}
                                 >
                                     <div className={`inline-flex items-center justify-center w-12 h-12 ${info.iconBg} rounded-xl mb-4`}>
@@ -51,7 +45,7 @@ export default function IletisimPage() {
                                     </div>
                                     <h3 className="text-lg font-bold text-slate-800 mb-2">{info.title}</h3>
                                     {info.lines.map(line => <p key={line} className="text-slate-500 text-sm">{line}</p>)}
-                                </motion.div>
+                                </div>
                             )
                             return info.href ? (
                                 <a key={info.title} href={info.href} target={info.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{Card}</a>
