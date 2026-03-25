@@ -3,25 +3,39 @@
 import { useEffect, useState } from "react"
 import { CarCard } from "./car-card"
 import { Sparkles } from "lucide-react"
+import Link from "next/link"
 import { carService } from "@/services/car.service"
+
+const CATEGORIES = [
+    { key: "sedan",    label: "Sedan",    image: "/cars/sedan.jpg" },
+    { key: "hatchback",label: "Hatchback",image: "/cars/hatchback.jpg" },
+    { key: "suv",      label: "SUV",      image: "/cars/suv.jpg" },
+    { key: "minivan",  label: "Minivan",  image: "/cars/minivan.jpg" },
+]
 
 const CATEGORY_ORDER = ["sedan", "hatchback", "suv", "minivan", "panelvan"]
 
 export function FeaturedCars() {
     const [cars, setCars] = useState<any[]>([])
+    const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({})
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchCars() {
             try {
                 const data = await carService.getCars()
-                // Kategori sırasına göre sırala: sedan > hatchback > suv > minivan
+                // Kategori sırasına göre sırala
                 const sorted = [...data].sort((a, b) => {
                     const ai = CATEGORY_ORDER.indexOf(a.category ?? "")
                     const bi = CATEGORY_ORDER.indexOf(b.category ?? "")
                     return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
                 })
                 setCars(sorted)
+                const counts: Record<string, number> = {}
+                CATEGORIES.forEach(cat => {
+                    counts[cat.key] = data.filter((c: any) => c.category === cat.key).length
+                })
+                setCategoryCounts(counts)
             } catch (error) {
                 console.error('Error fetching cars:', error)
             } finally {
@@ -34,6 +48,33 @@ export function FeaturedCars() {
     return (
         <section className="bg-slate-50 py-24">
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
+
+                {/* Kategori Kartları */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-12">
+                    {CATEGORIES.map((cat) => (
+                        <Link
+                            key={cat.key}
+                            href={`/cars?category=${cat.key}`}
+                            className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:shadow-lg transition-all duration-200 group"
+                        >
+                            <div className="w-full h-16 sm:h-24 flex items-center justify-center overflow-hidden">
+                                <img
+                                    src={cat.image}
+                                    alt={cat.label}
+                                    className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-110"
+                                    style={{ maxWidth: '200px' }}
+                                />
+                            </div>
+                            <span className="font-bold text-xs sm:text-sm uppercase tracking-wide text-slate-700 group-hover:text-blue-600 transition-colors text-center">
+                                {cat.label}
+                            </span>
+                            <span className="text-[10px] sm:text-xs text-slate-400">
+                                {categoryCounts[cat.key] ?? 0} araç
+                            </span>
+                        </Link>
+                    ))}
+                </div>
+
                 {/* Header */}
                 <div className="flex flex-col items-start gap-4 mb-14">
                     <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
@@ -48,7 +89,7 @@ export function FeaturedCars() {
                     </p>
                 </div>
 
-                {/* Grid */}
+                {/* Araç Grid */}
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3].map(i => (
