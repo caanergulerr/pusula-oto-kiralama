@@ -1,9 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 
 export function FloatingButtons() {
     const [menuOpen, setMenuOpen] = useState(false)
+    const pathname = usePathname()
+
+    // Login ve register sayfalarında gizle
+    const isAuthPage = pathname === '/login' || pathname === '/register'
 
     useEffect(() => {
         // Navbar'ın mobil menü durumunu izle
@@ -16,7 +21,7 @@ export function FloatingButtons() {
         return () => observer.disconnect()
     }, [])
 
-    if (menuOpen) return null
+    if (menuOpen || isAuthPage) return null
 
     return (
         <div className="fixed left-4 bottom-8 z-40 flex flex-col gap-3">

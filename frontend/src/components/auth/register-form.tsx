@@ -77,7 +77,7 @@ export function RegisterForm() {
     }
 
     return (
-        <div className="mx-auto max-w-sm space-y-6">
+        <div className="mx-auto w-full max-w-sm px-4 space-y-6">
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold">Kayıt Ol</h1>
                 <p className="text-gray-500 dark:text-gray-400">Yeni bir hesap oluşturun</p>

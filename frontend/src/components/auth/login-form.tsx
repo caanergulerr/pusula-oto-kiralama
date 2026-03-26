@@ -52,13 +52,13 @@ function LoginFormContent() {
     }
 
     return (
-        <div className="w-full max-w-md relative z-10">
+        <div className="w-full max-w-md px-4 sm:px-0 relative z-10">
             {/* Card */}
             <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden">
                 {/* Top accent */}
                 <div className="h-2 bg-gradient-to-r from-blue-500 to-sky-400" />
 
-                <div className="p-8">
+                <div className="p-5 sm:p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
