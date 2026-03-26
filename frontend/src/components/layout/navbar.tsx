@@ -158,7 +158,7 @@ export function Navbar() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className={`md:hidden ml-auto p-2 rounded-lg ${scrolled ? 'text-slate-600' : 'text-white'}`}
+                        className={`md:hidden ml-auto p-2 rounded-lg ${showScrolled ? 'text-slate-600' : 'text-white'}`}
                         onClick={() => setMobileOpen(!mobileOpen)}
                     >
                         {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
