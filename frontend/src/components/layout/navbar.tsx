@@ -190,11 +190,11 @@ export function Navbar() {
                         <Link href="/iletisim" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">İletişim</Link>
                         <div className="pt-3 border-t border-slate-100 flex gap-3">
                             {user ? (
-                                <Button onClick={handleLogout} variant="outline" className="flex-1 rounded-xl">Çıkış</Button>
+                                <button onClick={handleLogout} className="flex-1 border border-slate-300 text-slate-700 font-semibold rounded-xl py-2.5 hover:bg-slate-50 transition-colors">Çıkış</button>
                             ) : (
                                 <>
-                                    <Link href="/login" className="flex-1"><Button variant="outline" className="w-full rounded-xl">Giriş</Button></Link>
-                                    <Link href="/register" className="flex-1"><Button className="w-full bg-blue-600 hover:bg-blue-700 rounded-xl">Kayıt</Button></Link>
+                                    <Link href="/login" onClick={() => setMobileOpen(false)} className="flex-1 text-center border border-slate-300 text-slate-700 font-semibold rounded-xl py-2.5 hover:bg-slate-50 transition-colors">Giriş Yap</Link>
+                                    <Link href="/register" onClick={() => setMobileOpen(false)} className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-2.5 transition-colors">Kayıt Ol</Link>
                                 </>
                             )}
                         </div>
