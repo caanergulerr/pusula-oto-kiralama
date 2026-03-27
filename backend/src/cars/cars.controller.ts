@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile, UploadedFiles, Query } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { CarsService } from './cars.service';
@@ -91,5 +91,30 @@ export class CarsController {
             filename: file.filename,
             path: `/uploads/${file.filename}`
         };
+    }
+
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(UserRole.ADMIN)
+    @Post('upload-multiple')
+    @UseInterceptors(FilesInterceptor('files', 10, {
+        storage: diskStorage({
+            destination: join(__dirname, '../../../frontend/public/uploads'),
+            filename: (req, file, cb) => {
+                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+                cb(null, `${randomName}${extname(file.originalname)}`);
+            }
+        }),
+        fileFilter: (req, file, cb) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+                return cb(new Error('Only image files are allowed!'), false);
+            }
+            cb(null, true);
+        }
+    }))
+    uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
+        return files.map(file => ({
+            filename: file.filename,
+            path: `/uploads/${file.filename}`
+        }));
     }
 }

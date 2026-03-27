@@ -8,6 +8,7 @@ export interface Car {
     year: number;
     dailyPrice: number;
     imageUrl?: string;
+    imageUrls?: string; // JSON array
     description?: string;
     fuelType?: string;
     gearType?: string;

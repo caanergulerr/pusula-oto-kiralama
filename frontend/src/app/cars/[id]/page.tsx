@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
-import { Fuel, Gauge, Settings2, Users, Phone, ArrowLeft, CheckCircle, Shield, Star } from "lucide-react"
+import { Fuel, Gauge, Settings2, Phone, ArrowLeft, CheckCircle, Shield, Star, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { carService, Car } from "@/services/car.service"
 
@@ -22,6 +22,7 @@ export default function CarDetailPage() {
     const { id } = useParams()
     const [car, setCar] = useState<Car | null>(null)
     const [loading, setLoading] = useState(true)
+    const [activeImg, setActiveImg] = useState(0)
 
     useEffect(() => {
         async function fetchCar() {
@@ -91,31 +92,51 @@ export default function CarDetailPage() {
                 <div className="grid lg:grid-cols-5 gap-8">
                     {/* Left: Image + specs */}
                     <div className="lg:col-span-3 space-y-6">
-                        {/* Image */}
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" style={{ height: '380px' }}>
-                            {car.imageUrl ? (
-                                <div className="relative w-full h-full bg-white">
-                                    <Image
-                                        src={car.imageUrl}
-                                        alt={`${car.brand} ${car.model}`}
-                                        fill
-                                        unoptimized
-                                        className="object-contain p-8"
-                                        style={{ mixBlendMode: 'multiply' }}
-                                        priority
-                                    />
+                        {/* Image Gallery */}
+                        {(() => {
+                            const allImages: string[] = []
+                            if (car.imageUrls) {
+                                try { allImages.push(...JSON.parse(car.imageUrls)) } catch {}
+                            }
+                            if (car.imageUrl && !allImages.includes(car.imageUrl)) allImages.unshift(car.imageUrl)
+                            const mainImg = allImages[activeImg] || null
+                            return (
+                                <div className="space-y-3">
+                                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative" style={{ height: '320px' }}>
+                                        {mainImg ? (
+                                            <>
+                                                <div className="relative w-full h-full bg-white">
+                                                    <Image src={mainImg} alt={`${car.brand} ${car.model}`} fill unoptimized className="object-contain p-6" style={{ mixBlendMode: 'multiply' }} priority />
+                                                </div>
+                                                {allImages.length > 1 && (
+                                                    <>
+                                                        <button onClick={() => setActiveImg(i => (i - 1 + allImages.length) % allImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow"><ChevronLeft className="h-4 w-4 text-slate-600" /></button>
+                                                        <button onClick={() => setActiveImg(i => (i + 1) % allImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow"><ChevronRight className="h-4 w-4 text-slate-600" /></button>
+                                                    </>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-7xl bg-white">🚗</div>
+                                        )}
+                                    </div>
+                                    {allImages.length > 1 && (
+                                        <div className="flex gap-2 overflow-x-auto pb-1">
+                                            {allImages.map((img, i) => (
+                                                <button key={i} onClick={() => setActiveImg(i)} className={`flex-shrink-0 w-16 h-16 rounded-xl border-2 overflow-hidden bg-white transition-all ${i === activeImg ? 'border-blue-500' : 'border-slate-200 opacity-60 hover:opacity-100'}`}>
+                                                    <img src={img} alt="" className="w-full h-full object-contain p-1" style={{ mixBlendMode: 'multiply' as any }} />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-7xl bg-white">🚗</div>
-                            )}
-                        </div>
+                            )
+                        })()}
 
                         {/* Spec cards */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                             {[
                                 { icon: Settings2, label: 'Vites', value: specs.transmission || specs.gear || 'Otomatik' },
                                 { icon: Fuel, label: 'Yakıt', value: specs.fuelType || specs.fuel || 'Benzin' },
-                                { icon: Users, label: 'Koltuk', value: `${specs.seats || 5} Kişi` },
                                 { icon: Gauge, label: 'Limit', value: `${car.kmLimit || 150} km` },
                             ].map(({ icon: Icon, label, value }) => (
                                 <div key={label} className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 text-center shadow-sm">
@@ -124,6 +145,18 @@ export default function CarDetailPage() {
                                     <p className="text-xs sm:text-sm font-bold text-slate-700 leading-tight break-words">{value}</p>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Kasko bilgisi */}
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <ShieldCheck className="h-5 w-5 text-green-600" />
+                                <span className="font-bold text-green-800 text-sm">Standart Kasko Dahil</span>
+                            </div>
+                            <div className="flex gap-4 text-sm text-slate-600 pl-7">
+                                <span>Mini Kasko <span className="font-bold text-slate-800">+₺300/gün</span></span>
+                                <span>Full Kasko <span className="font-bold text-slate-800">+₺500/gün</span></span>
+                            </div>
                         </div>
 
                         {/* Description */}
@@ -151,7 +184,7 @@ export default function CarDetailPage() {
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                             <p className="text-slate-400 text-sm mb-1">Günlük Kiralama Ücreti</p>
                             <p className="text-5xl font-bold text-blue-600 mb-1">₺{car.dailyPrice}</p>
-                            <p className="text-slate-400 text-sm">KDV dahil, sigorta dahil</p>
+                            <p className="text-slate-400 text-sm">KDV dahil, standart kasko dahil</p>
                         </div>
 
                         {/* CTA */}
@@ -171,7 +204,8 @@ export default function CarDetailPage() {
                         {/* Trust items */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
                             {[
-                                { icon: Shield, text: "Tam kasko sigorta dahil" },
+                                { icon: ShieldCheck, text: "Standart Kasko Dahil" },
+                                { icon: Shield, text: "Mini Kasko +₺300 | Full Kasko +₺500" },
                                 { icon: Star, text: "5★ müşteri memnuniyeti" },
                                 { icon: CheckCircle, text: "Teknik kontrol yapılmış" },
                             ].map(({ icon: Icon, text }) => (

@@ -33,6 +33,9 @@ export class Car {
     @Column({ nullable: true })
     imageUrl: string;
 
+    @Column('text', { nullable: true })
+    imageUrls: string; // JSON array of image paths
+
 
     @Column({ nullable: true })
     kmLimit: number;

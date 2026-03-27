@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Fuel, Users, Cog, ArrowRight, Phone } from "lucide-react"
+import { Fuel, Cog, ArrowRight, Phone, ShieldCheck } from "lucide-react"
 
 interface CarCardProps {
     car: {
@@ -59,17 +59,28 @@ export function CarCard({ car }: CarCardProps) {
                     </div>
 
                     {/* Specs */}
-                    <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="grid grid-cols-2 gap-2 mb-3">
                         {[
                             { icon: Fuel, label: specs.fuelType || specs.fuel || 'Benzin' },
                             { icon: Cog, label: specs.transmission || specs.gear || 'Otomatik' },
-                            { icon: Users, label: `${specs.seats || '5'} Kişi` },
                         ].map(({ icon: Icon, label }) => (
                             <div key={label} className="flex flex-col items-center gap-1 p-2 bg-slate-50 rounded-xl border border-slate-100">
                                 <Icon className="h-4 w-4 text-blue-500" />
                                 <span className="text-xs text-slate-500 font-medium text-center leading-tight">{label}</span>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Kasko bilgisi */}
+                    <div className="flex flex-col gap-1 mb-3 text-xs text-slate-500">
+                        <div className="flex items-center gap-1.5">
+                            <ShieldCheck className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                            <span className="font-medium text-green-700">Standart Kasko Dahil</span>
+                        </div>
+                        <div className="flex items-center gap-3 pl-5">
+                            <span>Mini Kasko <span className="font-semibold text-slate-700">+₺300</span></span>
+                            <span>Full Kasko <span className="font-semibold text-slate-700">+₺500</span></span>
+                        </div>
                     </div>
 
                     {/* Price + CTA */}

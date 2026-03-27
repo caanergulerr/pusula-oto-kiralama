@@ -60,13 +60,16 @@ export function Navbar() {
 
                     {/* Logo - Sol */}
                     <div className="flex-shrink-0 md:mr-8">
-                        <Link href="/">
+                        <Link href="/" className="flex items-center gap-2">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src="/logo.png"
                                 alt="Pusula Oto Kiralama"
                                 className="h-10 md:h-16 w-auto object-contain transition-all"
                             />
+                            <span className={`font-bold text-sm sm:text-base leading-tight transition-colors ${showScrolled ? 'text-slate-800' : 'text-white'}`}>
+                                Pusula Oto<br className="hidden sm:block" /><span className="sm:hidden"> </span>Kiralama
+                            </span>
                         </Link>
                     </div>
 

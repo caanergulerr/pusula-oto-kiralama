@@ -72,6 +72,13 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
     const [loading, setLoading] = useState(false)
     const [imageFile, setImageFile] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string>(toDisplayUrl(initialData?.imageUrl))
+    const [extraFiles, setExtraFiles] = useState<File[]>([])
+    const [extraPreviews, setExtraPreviews] = useState<string[]>(() => {
+        if (initialData?.imageUrls) {
+            try { return JSON.parse(initialData.imageUrls) } catch { return [] }
+        }
+        return []
+    })
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>(() => {
         if (initialData?.features) {
             try {
@@ -107,11 +114,26 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
         if (file) {
             setImageFile(file)
             const reader = new FileReader()
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string)
-            }
+            reader.onloadend = () => setImagePreview(reader.result as string)
             reader.readAsDataURL(file)
         }
+    }
+
+    const handleExtraImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || [])
+        if (!files.length) return
+        setExtraFiles(prev => [...prev, ...files])
+        files.forEach(file => {
+            const reader = new FileReader()
+            reader.onloadend = () => setExtraPreviews(prev => [...prev, reader.result as string])
+            reader.readAsDataURL(file)
+        })
+        e.target.value = ''
+    }
+
+    const removeExtraPreview = (idx: number) => {
+        setExtraPreviews(prev => prev.filter((_, i) => i !== idx))
+        setExtraFiles(prev => prev.filter((_, i) => i !== idx))
     }
 
     const removeImage = () => {
@@ -146,36 +168,46 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
         setLoading(true)
         try {
             let imageUrl = data.imageUrl
+            let imageUrls: string[] = extraPreviews.filter(p => p.startsWith('/')) // keep existing server URLs
 
-            // Upload image if a new file is selected
+            // Upload main image if new file selected
             if (imageFile) {
                 const formData = new FormData()
                 formData.append('file', imageFile)
-
                 const token = localStorage.getItem('token')
                 const uploadRes = await fetch('/api/cars/upload', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 })
-
-                if (!uploadRes.ok) {
-                    throw new Error('Image upload failed')
-                }
-
+                if (!uploadRes.ok) throw new Error('Image upload failed')
                 const uploadData = await uploadRes.json()
-                // Backend { path: "/cars/filename.jpg" } dönüyor
-                // Dosyalar frontend/public/cars/ klasöründe olduğu için direkt /cars/... URL'si geçerli
-                imageUrl = uploadData.path || uploadData.url || uploadData.imageUrl || ''
+                imageUrl = uploadData.path || ''
+            }
+
+            // Upload extra images (only new File objects)
+            const newExtraFiles = extraFiles
+            if (newExtraFiles.length > 0) {
+                const formData = new FormData()
+                newExtraFiles.forEach(f => formData.append('files', f))
+                const token = localStorage.getItem('token')
+                const uploadRes = await fetch('/api/cars/upload-multiple', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                })
+                if (uploadRes.ok) {
+                    const uploaded = await uploadRes.json()
+                    imageUrls = [...imageUrls, ...uploaded.map((u: any) => u.path)]
+                }
             }
 
             await onSubmit({
                 ...data,
                 imageUrl,
+                imageUrls: JSON.stringify(imageUrls),
                 features: JSON.stringify(selectedFeatures)
-            })
+            } as any)
             toast.success(initialData ? "Araç güncellendi" : "Araç eklendi")
             router.refresh()
             router.push("/admin/cars")
@@ -235,6 +267,26 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                                 </p>
                             </div>
                         )}
+                    </div>
+                </div>
+
+                {/* Ek Fotoğraflar */}
+                <div>
+                    <Label className="text-base font-semibold">Ek Fotoğraflar (Opsiyonel)</Label>
+                    <div className="mt-2 flex flex-wrap gap-3">
+                        {extraPreviews.map((src, i) => (
+                            <div key={i} className="relative w-24 h-24 border rounded-lg overflow-hidden bg-slate-50">
+                                <img src={src} alt={`ek-${i}`} className="w-full h-full object-contain p-1" />
+                                <button type="button" onClick={() => removeExtraPreview(i)} className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                    <X className="w-3 h-3" />
+                                </button>
+                            </div>
+                        ))}
+                        <label htmlFor="extra-images" className="w-24 h-24 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 bg-slate-50 hover:bg-blue-50 transition-colors">
+                            <Upload className="h-6 w-6 text-slate-400 mb-1" />
+                            <span className="text-xs text-slate-400">Ekle</span>
+                            <input id="extra-images" type="file" accept="image/*" multiple onChange={handleExtraImages} className="hidden" />
+                        </label>
                     </div>
                 </div>
 

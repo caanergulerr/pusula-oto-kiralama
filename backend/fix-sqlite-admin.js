@@ -16,7 +16,7 @@ async function run() {
       INSERT OR REPLACE INTO users 
         (id, email, password_hash, full_name, role, phone, is_email_verified, verification_token, password_reset_token, password_reset_expiry, created_at, updated_at)
       VALUES 
-        (?, 'caaner.gulerr@gmail.com', ?, 'Admin', 'ADMIN', NULL, 1, NULL, NULL, NULL, datetime('now'), datetime('now'))
+        (?, 'otokiralamapusula@gmail.com', ?, 'Admin', 'ADMIN', NULL, 1, NULL, NULL, NULL, datetime('now'), datetime('now'))
     `, [id, hash], function(err) {
       if (err) {
         console.error('INSERT hatası:', err.message);
