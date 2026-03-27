@@ -236,11 +236,12 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <div className="relative">
                                 <div className="relative w-full h-64 mb-4">
                                     <Image
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        fill
-                                        className="object-contain rounded-lg"
-                                    />
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    fill
+                                    unoptimized
+                                    className="object-contain rounded-lg"
+                                />
                                 </div>
                                 <Button
                                     type="button"
