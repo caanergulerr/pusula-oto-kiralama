@@ -92,6 +92,12 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
     const [customFeatures, setCustomFeatures] = useState<string[]>([])
     const [newFeature, setNewFeature] = useState("")
 
+    // specs JSON'dan yakıt/vites bilgilerini çıkar
+    const parsedSpecs = (() => {
+        if (!initialData?.specs) return {}
+        try { return JSON.parse(initialData.specs as string) } catch { return {} }
+    })()
+
     const form = useForm({
         resolver: zodResolver(carSchema),
         defaultValues: {
@@ -103,8 +109,8 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
             kmLimit: initialData?.kmLimit || 0,
             imageUrl: initialData?.imageUrl || "",
             description: initialData?.description || "",
-            fuelType: initialData?.fuelType || "",
-            gearType: initialData?.gearType || "",
+            fuelType: initialData?.fuelType || parsedSpecs?.fuelType || parsedSpecs?.fuel || "",
+            gearType: initialData?.gearType || parsedSpecs?.transmission || parsedSpecs?.gear || "",
             category: (initialData as any)?.category || "",
         },
     })
