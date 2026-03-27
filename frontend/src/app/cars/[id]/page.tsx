@@ -71,8 +71,8 @@ export default function CarDetailPage() {
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         Araçlara Dön
                     </Link>
-                    <h1 className="text-2xl sm:text-4xl font-bold text-white relative z-10">{car.brand} {car.model}</h1>
-                    <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-3 relative z-10">
+                    <h1 className="text-2xl sm:text-4xl font-bold text-white relative z-10 select-none">{car.brand} {car.model}</h1>
+                    <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-3 relative z-10 select-none">
                         <span className="px-2.5 py-1 bg-white/10 text-slate-300 rounded-full text-xs sm:text-sm font-medium">{car.year}</span>
                         <span className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold ${isAvailable ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}`}>
                             {isAvailable ? '✓ Müsait' : '✗ Dolu'}

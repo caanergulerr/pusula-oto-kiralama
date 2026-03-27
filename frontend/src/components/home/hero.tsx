@@ -32,13 +32,13 @@ export function Hero() {
                         Elazığ'ın En Güvenilir Araç Kiralama Hizmeti
                     </div>
 
-                    <h1 className="hero-item-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6">
+                    <h1 className="hero-item-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6 select-none">
                         Yola Çıkmanın
                         <br />
                         <span className="text-blue-400">En Kolay</span> Yolu
                     </h1>
 
-                    <p className="hero-item-3 text-base sm:text-lg md:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed max-w-2xl">
+                    <p className="hero-item-3 text-base sm:text-lg md:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed max-w-2xl select-none">
                         İhtiyacınıza uygun aracı seçin, dakikalar içinde kiralayın.
                         Geniş araç filomuz ve uygun fiyatlarımızla hizmetinizdeyiz.
                     </p>

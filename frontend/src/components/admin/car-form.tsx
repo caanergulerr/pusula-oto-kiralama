@@ -173,8 +173,8 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
     async function handleSubmit(data: z.infer<typeof carSchema>) {
         setLoading(true)
         try {
-            let imageUrl = data.imageUrl
-            let imageUrls: string[] = extraPreviews.filter(p => p.startsWith('/')) // keep existing server URLs
+            let imageUrl = data.imageUrl || initialData?.imageUrl || ''
+            let imageUrls: string[] = extraPreviews.filter(p => p.startsWith('/'))
 
             // Upload main image if new file selected
             if (imageFile) {
@@ -188,7 +188,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 })
                 if (!uploadRes.ok) throw new Error('Image upload failed')
                 const uploadData = await uploadRes.json()
-                imageUrl = uploadData.path || ''
+                imageUrl = uploadData.path || imageUrl  // fallback to existing if path empty
             }
 
             // Upload extra images (only new File objects)
@@ -208,12 +208,14 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 }
             }
 
-            await onSubmit({
+            const submitData: any = {
                 ...data,
                 imageUrl,
-                imageUrls: JSON.stringify(imageUrls),
                 features: JSON.stringify(selectedFeatures)
-            } as any)
+            }
+            if (imageUrls.length > 0) submitData.imageUrls = JSON.stringify(imageUrls)
+
+            await onSubmit(submitData)
             toast.success(initialData ? "Araç güncellendi" : "Araç eklendi")
             router.refresh()
             router.push("/admin/cars")
