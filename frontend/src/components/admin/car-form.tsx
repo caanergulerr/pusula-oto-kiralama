@@ -238,23 +238,36 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                             <div className="relative">
                                 <div className="relative w-full h-64 mb-4">
                                     <Image
-                                    src={imagePreview}
-                                    alt="Preview"
-                                    fill
-                                    unoptimized
-                                    className="object-contain rounded-lg"
-                                />
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        fill
+                                        unoptimized
+                                        className="object-contain rounded-lg"
+                                    />
                                 </div>
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={removeImage}
-                                    className="mx-auto"
-                                >
-                                    <X className="mr-2 h-4 w-4" />
-                                    Görseli Kaldır
-                                </Button>
+                                <div className="flex gap-2 justify-center">
+                                    {/* Fotoğrafı Değiştir butonu — seçince direkt yeni dosya */}
+                                    <label htmlFor="image-upload-replace" className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                        <Upload className="h-3.5 w-3.5" />
+                                        Fotoğrafı Değiştir
+                                        <input
+                                            id="image-upload-replace"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={removeImage}
+                                    >
+                                        <X className="mr-1.5 h-3.5 w-3.5" />
+                                        Kaldır
+                                    </Button>
+                                </div>
                             </div>
                         ) : (
                             <div>
