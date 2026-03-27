@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterc
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
+import { mkdirSync } from 'fs';
 import { CarsService } from './cars.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -10,7 +11,12 @@ import { UserRole } from '../users/entities/user.entity';
 
 @Controller('cars')
 export class CarsController {
-    constructor(private readonly carsService: CarsService) { }
+    private readonly uploadDir = join(__dirname, '../../../frontend/public/uploads');
+
+    constructor(private readonly carsService: CarsService) {
+        // Uploads klasörü yoksa oluştur
+        try { mkdirSync(this.uploadDir, { recursive: true }); } catch {}
+    }
 
     @Get()
     findAll() {

@@ -213,3 +213,14 @@ html {
 .hero-item-4 { animation: fadeInUp 0.7s ease 0.3s both; }
 .hero-item-5 { animation: fadeInUp 0.8s ease 0.5s both; }
 .hero-item-6 { animation: fadeInUp 0.8s ease 0.7s both; }
+
+/* Metin imlecini başlıklarda önle */
+h1, h2, h3, h4, h5, h6, p, span, label {
+  cursor: default;
+}
+a, button, input, textarea, select, [role="button"] {
+  cursor: pointer;
+}
+input, textarea {
+  cursor: text;
+}
