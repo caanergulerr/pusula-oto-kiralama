@@ -214,13 +214,15 @@ html {
 .hero-item-5 { animation: fadeInUp 0.8s ease 0.5s both; }
 .hero-item-6 { animation: fadeInUp 0.8s ease 0.7s both; }
 
-/* Metin imlecini başlıklarda önle */
-h1, h2, h3, h4, h5, h6, p, span, label {
+/* Metin imlecini sitegenelinde önle */
+* {
   cursor: default;
 }
-a, button, input, textarea, select, [role="button"] {
-  cursor: pointer;
+a, button, [role="button"], .cursor-pointer {
+  cursor: pointer !important;
 }
-input, textarea {
-  cursor: text;
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="tel"], input[type="search"], textarea {
+  cursor: text !important;
 }
+select { cursor: pointer !important; }

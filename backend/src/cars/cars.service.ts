@@ -69,6 +69,7 @@ export class CarsService {
         }
         
         Object.assign(car, rest);
+        console.log(`[CAR UPDATE] id=${id} imageUrl=${car.imageUrl}`);
         return this.carsRepository.save(car);
     }
 
