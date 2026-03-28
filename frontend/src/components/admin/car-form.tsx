@@ -181,7 +181,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 const formData = new FormData()
                 formData.append('file', imageFile)
                 const token = localStorage.getItem('token')
-                const uploadRes = await fetch('/api/cars/upload', {
+                const uploadRes = await fetch('/api/upload', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
@@ -197,7 +197,7 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 const formData = new FormData()
                 newExtraFiles.forEach(f => formData.append('files', f))
                 const token = localStorage.getItem('token')
-                const uploadRes = await fetch('/api/cars/upload-multiple', {
+                const uploadRes = await fetch('/api/upload-multiple', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
