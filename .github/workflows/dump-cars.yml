@@ -17,26 +17,34 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            echo "=== READING CARS FROM CURRENT DATABASE ==="
+            echo "=== CURRENT DB - SCHEMA ==="
             cd /var/www/pusula-oto/backend
             node -e "
             const sqlite3 = require('./node_modules/sqlite3').verbose();
             const db = new sqlite3.Database('./data/database.sqlite');
-            db.all('SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features, plateNumber, status FROM cars ORDER BY dailyPrice ASC', [], (err, rows) => {
+            db.all(\"PRAGMA table_info(cars)\", [], (err, rows) => {
+              if(err) console.error(err.message);
+              else console.log('SCHEMA:' + JSON.stringify(rows.map(r=>r.name)));
+            });
+            db.all('SELECT * FROM cars ORDER BY dailyPrice ASC', [], (err, rows) => {
               if(err) { console.error('QUERY ERR:', err.message); }
-              else { console.log('CAR_COUNT:', rows.length); console.log('CARS_JSON:' + JSON.stringify(rows)); }
+              else { console.log('CAR_COUNT:' + rows.length); console.log('CARS_JSON:' + JSON.stringify(rows)); }
               db.close();
             });
             " 2>&1
 
             echo ""
-            echo "=== READING CARS FROM BACKUP DATABASE ==="
+            echo "=== BACKUP DB - SCHEMA ==="
             node -e "
             const sqlite3 = require('./node_modules/sqlite3').verbose();
             const db = new sqlite3.Database('/var/www/backup/database.sqlite');
-            db.all('SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features, plateNumber, status FROM cars ORDER BY dailyPrice ASC', [], (err, rows) => {
+            db.all(\"PRAGMA table_info(cars)\", [], (err, rows) => {
+              if(err) console.error(err.message);
+              else console.log('BSCHEMA:' + JSON.stringify(rows.map(r=>r.name)));
+            });
+            db.all('SELECT * FROM cars ORDER BY dailyPrice ASC', [], (err, rows) => {
               if(err) { console.error('BACKUP ERR:', err.message); }
-              else { console.log('BACKUP_COUNT:', rows.length); console.log('BACKUP_JSON:' + JSON.stringify(rows)); }
+              else { console.log('BACKUP_COUNT:' + rows.length); console.log('BACKUP_JSON:' + JSON.stringify(rows)); }
               db.close();
             });
             " 2>&1
