@@ -42,7 +42,7 @@ export class Payment {
     @JoinColumn({ name: 'bookingId' })
     booking: Booking;
 
-    @Column({ type: 'uuid' })
+    @Column()
     bookingId: string;
 
     @CreateDateColumn({ name: 'created_at' })

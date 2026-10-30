@@ -1,14 +1,70 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Car } from './entities/car.entity';
 
 @Injectable()
-export class CarsService {
+export class CarsService implements OnModuleInit {
     constructor(
         @InjectRepository(Car)
         private carsRepository: Repository<Car>,
     ) { }
+
+    async onModuleInit() {
+        try {
+            const count = await this.carsRepository.count();
+            if (count === 0) {
+                const defaultCars = [
+                    {
+                        brand: 'Hyundai',
+                        model: 'i20',
+                        year: 2022,
+                        dailyPrice: 1200,
+                        totalStock: 2,
+                        availableStock: 2,
+                        category: 'hatchback',
+                        imageUrl: '/cars/490705a0a10a27eaf23e96fbb3d6c1ede.png',
+                        kmLimit: 300,
+                        description: 'Ekonomik ve konforlu Hyundai i20 ile seyahatlerinizi keyifle tamamlayın.',
+                        specs: JSON.stringify({ fuelType: 'Benzin', transmission: 'Manuel', seats: 5 }),
+                        features: JSON.stringify(['Bluetooth', 'USB', 'Klima']),
+                    },
+                    {
+                        brand: 'Renault',
+                        model: 'Clio',
+                        year: 2022,
+                        dailyPrice: 1100,
+                        totalStock: 2,
+                        availableStock: 2,
+                        category: 'hatchback',
+                        imageUrl: '/cars/4d3b5e844823826e86b561f0c441b197.png',
+                        kmLimit: 300,
+                        description: 'Yakıt tasarruflu ve şık tasarımıyla Renault Clio her yolculukta yanınızda.',
+                        specs: JSON.stringify({ fuelType: 'Benzin', transmission: 'Manuel', seats: 5 }),
+                        features: JSON.stringify(['Bluetooth', 'USB', 'Klima']),
+                    },
+                    {
+                        brand: 'Fiat',
+                        model: 'Egea',
+                        year: 2023,
+                        dailyPrice: 1300,
+                        totalStock: 2,
+                        availableStock: 2,
+                        category: 'sedan',
+                        imageUrl: '/cars/6894b7e0695becab108101ee1268dd314.png',
+                        kmLimit: 300,
+                        description: 'Geniş iç hacmi ve konforlu sürüşüyle Fiat Egea Sedan uzun yolculuklar için ideal.',
+                        specs: JSON.stringify({ fuelType: 'Dizel', transmission: 'Manuel', seats: 5 }),
+                        features: JSON.stringify(['Bluetooth', 'USB', 'Klima', 'Hız Sabitleyici']),
+                    },
+                ];
+                await this.carsRepository.save(defaultCars);
+                console.log('✅ Varsayılan araçlar veritabanına otomatik eklendi.');
+            }
+        } catch (err) {
+            console.error('Varsayılan araçlar yüklenirken hata:', err);
+        }
+    }
 
     create(createCarDto: any) {
         const { fuelType, gearType, totalStock, ...carData } = createCarDto;

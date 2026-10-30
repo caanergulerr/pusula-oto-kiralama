@@ -37,6 +37,7 @@ jobs:
 
             echo "⚙️ [Backend] Ortam değişkenleri oluşturuluyor..."
             echo "DATABASE_URL=\"${{ secrets.DATABASE_URL }}\"" > backend/.env
+            echo "DB_TYPE=sqlite" >> backend/.env
             echo "JWT_SECRET=\"${{ secrets.JWT_SECRET }}\"" >> backend/.env
             echo "FRONTEND_URL=https://elazigotokiralamapusula.com" >> backend/.env
             echo "APP_URL=https://elazigotokiralamapusula.com" >> backend/.env
@@ -51,6 +52,7 @@ jobs:
 
             echo "⚙️ [Backend] Bağımlılıklar yükleniyor ve derleniyor..."
             cd backend
+            mkdir -p data
             npm install
             npm run build
 

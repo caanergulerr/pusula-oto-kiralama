@@ -16,10 +16,10 @@ export class Booking {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'datetime' })
     startDate: Date;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'datetime' })
     endDate: Date;
 
     @Column('decimal', { precision: 10, scale: 2 })
@@ -60,14 +60,14 @@ export class Booking {
     @JoinColumn({ name: 'userId' })
     user: User;
 
-    @Column({ type: 'uuid', nullable: true })
+    @Column({ nullable: true })
     userId: string | null;
 
     @ManyToOne(() => Car, (car) => car.id)
     @JoinColumn({ name: 'carId' })
     car: Car;
 
-    @Column({ type: 'uuid' })
+    @Column()
     carId: string;
 
     @CreateDateColumn()

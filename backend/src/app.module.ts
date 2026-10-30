@@ -25,13 +25,24 @@ import { StatsModule } from './stats/stats.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL') || process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const dbType = config.get<string>('DB_TYPE') || (config.get<string>('DATABASE_URL') ? 'postgres' : 'sqlite');
+        if (dbType === 'sqlite') {
+          return {
+            type: 'sqlite',
+            database: 'data/database.sqlite',
+            autoLoadEntities: true,
+            synchronize: true,
+          };
+        }
+        return {
+          type: 'postgres',
+          url: config.get<string>('DATABASE_URL') || process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false },
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
     }),
     CarsModule,
     UsersModule,

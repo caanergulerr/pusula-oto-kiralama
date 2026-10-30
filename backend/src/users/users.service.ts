@@ -1,15 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
     ) { }
+
+    async onModuleInit() {
+        try {
+            const adminEmail = 'caaner.gulerr@gmail.com';
+            const existingAdmin = await this.usersRepository.findOneBy({ email: adminEmail });
+            if (!existingAdmin) {
+                const salt = await bcrypt.genSalt();
+                const hashedPassword = await bcrypt.hash('Pusula2024!', salt);
+                const admin = this.usersRepository.create({
+                    email: adminEmail,
+                    fullName: 'Caner Güler',
+                    passwordHash: hashedPassword,
+                    role: UserRole.ADMIN,
+                    isEmailVerified: true,
+                });
+                await this.usersRepository.save(admin);
+                console.log('✅ Admin kullanıcısı (caaner.gulerr@gmail.com) otomatik oluşturuldu.');
+            }
+        } catch (err) {
+            console.error('Admin kullanıcısı oluşturulurken hata:', err);
+        }
+    }
 
     async create(userData: Partial<User>): Promise<User> {
         const salt = await bcrypt.genSalt();
