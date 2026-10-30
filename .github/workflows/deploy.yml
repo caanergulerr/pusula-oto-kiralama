@@ -35,6 +35,22 @@ jobs:
             git clean -fd
             git pull origin main
 
+            echo "⚙️ [Backend] Ortam değişkenleri oluşturuluyor..."
+            cat << 'EOF' > backend/.env
+DATABASE_URL="${{ secrets.DATABASE_URL }}"
+JWT_SECRET="${{ secrets.JWT_SECRET }}"
+FRONTEND_URL=https://elazigotokiralamapusula.com
+APP_URL=https://elazigotokiralamapusula.com
+NODE_ENV=production
+GMAIL_USER="${{ secrets.GMAIL_USER }}"
+GMAIL_PASS="${{ secrets.GMAIL_PASS }}"
+PORT=3000
+PAYTR_MERCHANT_ID=test_merchant_id
+PAYTR_MERCHANT_KEY=test_merchant_key
+PAYTR_MERCHANT_SALT=test_merchant_salt
+PAYTR_TEST_MODE=1
+EOF
+
             echo "⚙️ [Backend] Bağımlılıklar yükleniyor ve derleniyor..."
             cd backend
             npm install
@@ -47,9 +63,12 @@ jobs:
             npx next build
 
             echo "🔄 [PM2] Servisler yeniden başlatılıyor..."
-            pm2 restart pusula-backend || pm2 start dist/main.js --name "pusula-backend"
-            pm2 restart pusula-frontend || pm2 start node_modules/.bin/next --name "pusula-frontend" -- start -p 3001
+            pm2 delete pusula-backend || true
+            pm2 start /var/www/pusula-oto/backend/dist/main.js --name "pusula-backend" --cwd /var/www/pusula-oto/backend
+            pm2 delete pusula-frontend || true
+            pm2 start /var/www/pusula-oto/frontend/node_modules/.bin/next --name "pusula-frontend" --cwd /var/www/pusula-oto/frontend -- start -p 3001
             pm2 save
+            pm2 status
 
             echo "✅ [Deploy] Pusula Oto Kiralama başarıyla canlıya alındı!"
 
