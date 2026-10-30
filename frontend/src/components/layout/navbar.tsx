@@ -46,9 +46,15 @@ export function Navbar() {
         { label: 'Diyarbakır Oto Kiralama', href: '/cars' },
     ]
 
-    // Giriş/Kayıt vb. açık renkli arkaplana sahip sayfalarda navbar her zaman beyaz kalmalı
-    const isAuthPage = pathname === '/login' || pathname === '/register';
-    const showScrolled = scrolled || isAuthPage;
+    // Bu sayfalarda hero koyu değil, beyaz/açık arka plan var — navbar daima koyu modda olmalı
+    const alwaysScrolledPages = [
+        '/login', '/register',
+        '/kiralama-kosullari', '/haberler', '/iletisim',
+        '/hakkimizda', '/sss', '/profile', '/odeme',
+        '/sifremi-unuttum', '/sifre-sifirla', '/dogrulama',
+    ];
+    const isAlwaysScrolled = alwaysScrolledPages.some(p => pathname === p || pathname?.startsWith(p + '/'));
+    const showScrolled = scrolled || isAlwaysScrolled;
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${showScrolled
