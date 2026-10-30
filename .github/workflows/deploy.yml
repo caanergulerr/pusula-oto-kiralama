@@ -26,19 +26,25 @@ jobs:
           script_stop: true
           command_timeout: 15m
           script: |
-            echo "🔍 [Audit] VPS üzerindeki geçmiş veriler ve loglar taranıyor..."
-            grep -iE "brand|dailyPrice|model|plateNumber" /root/.pm2/logs/* 2>/dev/null | head -n 40 || true
-            find / -name "*database*.sqlite*" 2>/dev/null || true
-            grep -E "node|seed|cars" /root/.bash_history 2>/dev/null | tail -n 20 || true
-
             echo "🚀 [Deploy] VPS Güncellemesi Başlatılıyor..."
             cd /var/www/pusula-oto
+
+            # SQLite veritabanini deploy oncesi guvene al
+            mkdir -p /var/www/backup
+            if [ -f backend/data/database.sqlite ]; then
+              cp -f backend/data/database.sqlite /var/www/backup/database.sqlite
+            fi
 
             echo "🧹 [Git] Sunucu temizleniyor ve en son kodlar zorla çekiliyor..."
             git fetch origin main
             git reset --hard origin/main
-            git clean -fd
+            git clean -fd -e backend/data -e backend/.env
             git pull origin main
+
+            mkdir -p backend/data
+            if [ ! -f backend/data/database.sqlite ] && [ -f /var/www/backup/database.sqlite ]; then
+              cp -f /var/www/backup/database.sqlite backend/data/database.sqlite
+            fi
 
             echo "⚙️ [Backend] Ortam değişkenleri oluşturuluyor..."
             echo "DATABASE_URL=\"${{ secrets.DATABASE_URL }}\"" > backend/.env
