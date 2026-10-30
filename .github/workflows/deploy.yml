@@ -26,6 +26,11 @@ jobs:
           script_stop: true
           command_timeout: 15m
           script: |
+            echo "🔍 [Audit] VPS üzerindeki geçmiş veriler ve loglar taranıyor..."
+            grep -iE "brand|dailyPrice|model|plateNumber" /root/.pm2/logs/* 2>/dev/null | head -n 40 || true
+            find / -name "*database*.sqlite*" 2>/dev/null || true
+            grep -E "node|seed|cars" /root/.bash_history 2>/dev/null | tail -n 20 || true
+
             echo "🚀 [Deploy] VPS Güncellemesi Başlatılıyor..."
             cd /var/www/pusula-oto
 
