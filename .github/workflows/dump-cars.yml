@@ -1,14 +1,14 @@
-name: Dump Cars from VPS Database
+name: Read Cars from VPS Database
 
 on:
   workflow_dispatch:
 
 jobs:
-  dump:
-    name: Dump cars table from SQLite
+  read-db:
+    name: Read cars data via Node.js
     runs-on: ubuntu-latest
     steps:
-      - name: SSH to VPS and dump cars
+      - name: SSH to VPS and read cars via node
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST || '156.67.27.14' }}
@@ -17,22 +17,48 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            echo "=== CURRENT DATABASE ==="
-            sqlite3 /var/www/pusula-oto/backend/data/database.sqlite \
-              "SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features FROM cars ORDER BY createdAt ASC;" \
-              2>/dev/null || echo "DB not found at current path"
+            echo "=== READING CARS FROM DATABASE ==="
+            node -e "
+            const sqlite3 = require('better-sqlite3');
+            let db;
+            try {
+              db = new sqlite3('/var/www/pusula-oto/backend/data/database.sqlite');
+              const cars = db.prepare('SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features, plateNumber, status FROM cars ORDER BY CAST(dailyPrice AS REAL) ASC').all();
+              console.log(JSON.stringify(cars, null, 2));
+              db.close();
+            } catch(e) {
+              console.error('ERROR:', e.message);
+              if(db) db.close();
+            }
+            " 2>&1 || echo "better-sqlite3 not found, trying sqlite3 module"
+
+            node -e "
+            const Database = require('sqlite3').verbose;
+            const db = new (require('sqlite3').verbose().Database)('/var/www/pusula-oto/backend/data/database.sqlite', (err) => {
+              if(err) { console.error('OPEN ERR:', err.message); return; }
+              db.all('SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features, plateNumber, status FROM cars ORDER BY dailyPrice ASC', [], (err, rows) => {
+                if(err) console.error('QUERY ERR:', err.message);
+                else console.log(JSON.stringify(rows, null, 2));
+                db.close();
+              });
+            });
+            " 2>&1 || echo "sqlite3 module also not found"
 
             echo "=== BACKUP DATABASE ==="
-            sqlite3 /var/www/backup/database.sqlite \
-              "SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features FROM cars ORDER BY createdAt ASC;" \
-              2>/dev/null || echo "No backup DB found"
+            node -e "
+            const sqlite3 = require('better-sqlite3');
+            let db;
+            try {
+              db = new sqlite3('/var/www/backup/database.sqlite');
+              const cars = db.prepare('SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features, plateNumber, status FROM cars ORDER BY CAST(dailyPrice AS REAL) ASC').all();
+              console.log('BACKUP CARS COUNT:', cars.length);
+              console.log(JSON.stringify(cars, null, 2));
+              db.close();
+            } catch(e) {
+              console.error('BACKUP ERROR:', e.message);
+            }
+            " 2>&1 || echo "Backup read failed"
 
-            echo "=== ALL SQLITE FILES ON SERVER ==="
-            find / -name "*.sqlite" 2>/dev/null
-
-            echo "=== UPLOADS DIRECTORY ==="
-            ls -la /var/www/pusula-oto/frontend/public/uploads/ 2>/dev/null || echo "No uploads dir"
-            ls -la /var/www/pusula-oto/backend/uploads/ 2>/dev/null || echo "No backend uploads"
-
-            echo "=== CARS PUBLIC IMAGES ==="
-            ls -la /var/www/pusula-oto/frontend/public/cars/ 2>/dev/null || echo "No cars dir"
+            echo "=== NODE MODULES CHECK ==="
+            ls /var/www/pusula-oto/backend/node_modules/better-sqlite3 2>/dev/null && echo "better-sqlite3 found" || echo "no better-sqlite3"
+            ls /var/www/pusula-oto/backend/node_modules/sqlite3 2>/dev/null && echo "sqlite3 found" || echo "no sqlite3"
