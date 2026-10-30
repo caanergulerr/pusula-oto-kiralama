@@ -1,8 +1,9 @@
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
 
 const client = new Client({
-  connectionString: 'postgresql://neondb_owner:npg_vI27lUHYtOQz@ep-patient-water-altzgv9e-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+  connectionString: process.env.DATABASE_URL
 });
 
 const cars = [

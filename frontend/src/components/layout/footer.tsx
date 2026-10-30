@@ -30,6 +30,7 @@ export function Footer() {
                                 { label: 'Anasayfa', href: '/' },
                                 { label: 'Araçlar', href: '/cars' },
                                 { label: 'Hakkımızda', href: '/hakkimizda' },
+                                { label: 'SSS', href: '/sss' },
                                 { label: 'İletişim', href: '/iletisim' },
                             ].map(link => (
                                 <li key={link.href}>

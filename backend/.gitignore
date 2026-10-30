@@ -37,10 +37,21 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
+.env.*
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+!.env.example
+
+# databases & logs
+*.sqlite
+*.sqlite3
+*.db
+data/
+*.log
+*_log.txt
+out_utf8.txt
 
 # temp directory
 .temp

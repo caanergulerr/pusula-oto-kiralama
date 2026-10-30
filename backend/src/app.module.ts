@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
@@ -22,11 +22,16 @@ import { StatsModule } from './stats/stats.module';
       ttl: 60000,   // 60 saniye
       limit: 60,    // max 60 istek
     }]),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'data/database.sqlite',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        url: config.get<string>('DATABASE_URL') || process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
     }),
     CarsModule,
     UsersModule,

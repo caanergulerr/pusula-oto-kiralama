@@ -16,14 +16,17 @@ export class Payment {
     @Column('decimal', { precision: 10, scale: 2 })
     amount: number;
 
-    @Column()
+    @Column({ default: 'TL' })
     currency: string;
 
-    @Column()
-    provider: string; // 'STRIPE'
+    @Column({ default: 'PAYTR' })
+    provider: string; // 'PAYTR'
 
-    @Column({ name: 'transaction_id' })
-    transactionId: string; // Stripe PaymentIntent ID
+    @Column({ name: 'transaction_id', nullable: true })
+    transactionId: string; // PayTR payment id or transaction ref
+
+    @Column({ name: 'merchant_oid', nullable: true })
+    merchantOid: string;
 
     @Column({
         type: 'varchar',
@@ -32,7 +35,10 @@ export class Payment {
     })
     status: PaymentStatus;
 
-    @OneToOne(() => Booking, (booking) => booking.payment)
+    @Column({ name: 'error_message', nullable: true, type: 'text' })
+    errorMessage: string | null;
+
+    @OneToOne(() => Booking, (booking) => booking.payment, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'bookingId' })
     booking: Booking;
 

@@ -105,6 +105,14 @@ export function Navbar() {
                             Hakkımızda
                             <span className={`absolute -bottom-1 left-0 h-0.5 rounded-full transition-all duration-300 ${pathname === '/hakkimizda' ? 'w-full bg-blue-500' : 'w-0 group-hover:w-full bg-blue-400'}`} />
                         </Link>
+                        <Link href="/sss" className={`text-sm font-semibold transition-colors relative group ${showScrolled ? pathname === '/sss' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600' : pathname === '/sss' ? 'text-white' : 'text-white/80 hover:text-white'}`}>
+                            SSS
+                            <span className={`absolute -bottom-1 left-0 h-0.5 rounded-full transition-all duration-300 ${pathname === '/sss' ? 'w-full bg-blue-500' : 'w-0 group-hover:w-full bg-blue-400'}`} />
+                        </Link>
+                        <Link href="/kiralama-kosullari" className={`text-sm font-semibold transition-colors relative group ${showScrolled ? pathname === '/kiralama-kosullari' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600' : pathname === '/kiralama-kosullari' ? 'text-white' : 'text-white/80 hover:text-white'}`}>
+                            Koşullar
+                            <span className={`absolute -bottom-1 left-0 h-0.5 rounded-full transition-all duration-300 ${pathname === '/kiralama-kosullari' ? 'w-full bg-blue-500' : 'w-0 group-hover:w-full bg-blue-400'}`} />
+                        </Link>
                         <Link href="/haberler" className={`text-sm font-semibold transition-colors relative group ${showScrolled ? pathname === '/haberler' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600' : pathname === '/haberler' ? 'text-white' : 'text-white/80 hover:text-white'}`}>
                             Haberler
                             <span className={`absolute -bottom-1 left-0 h-0.5 rounded-full transition-all duration-300 ${pathname === '/haberler' ? 'w-full bg-blue-500' : 'w-0 group-hover:w-full bg-blue-400'}`} />
@@ -189,6 +197,7 @@ export function Navbar() {
                         </div>
 
                         <Link href="/hakkimizda" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">Hakkımızda</Link>
+                        <Link href="/sss" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">SSS</Link>
                         <Link href="/haberler" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">Haberler</Link>
                         <Link href="/iletisim" onClick={() => setMobileOpen(false)} className="block py-2 text-slate-700 font-semibold hover:text-blue-600">İletişim</Link>
                         <div className="pt-3 border-t border-slate-100 flex gap-3">

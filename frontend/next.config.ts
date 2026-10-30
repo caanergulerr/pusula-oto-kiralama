@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.paratic.com' },
@@ -25,6 +29,14 @@ const nextConfig: NextConfig = {
       {
         source: '/api/:path*',
         destination: 'http://localhost:3000/:path*',
+      },
+      {
+        source: '/upload',
+        destination: 'http://localhost:3000/cars/upload',
+      },
+      {
+        source: '/upload-multiple',
+        destination: 'http://localhost:3000/cars/upload-multiple',
       },
     ];
   },

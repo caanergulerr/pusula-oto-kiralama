@@ -8,6 +8,7 @@ export enum BookingStatus {
     CONFIRMED = 'CONFIRMED',
     CANCELLED = 'CANCELLED',
     COMPLETED = 'COMPLETED',
+    FAILED = 'FAILED',
 }
 
 @Entity('bookings')
@@ -15,10 +16,10 @@ export class Booking {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'datetime' })
+    @Column({ type: 'timestamp' })
     startDate: Date;
 
-    @Column({ type: 'datetime' })
+    @Column({ type: 'timestamp' })
     endDate: Date;
 
     @Column('decimal', { precision: 10, scale: 2 })
@@ -31,18 +32,42 @@ export class Booking {
     })
     status: BookingStatus;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @Column({ name: 'customer_name', nullable: true })
+    customerName: string;
+
+    @Column({ name: 'customer_phone', nullable: true })
+    customerPhone: string;
+
+    @Column({ name: 'customer_email', nullable: true })
+    customerEmail: string;
+
+    @Column({ name: 'identity_number', nullable: true })
+    identityNumber: string;
+
+    @Column({ name: 'insurance_type', default: 'STANDART' })
+    insuranceType: string;
+
+    @Column('decimal', { name: 'insurance_price', precision: 10, scale: 2, default: 0 })
+    insurancePrice: number;
+
+    @Column({ type: 'int', default: 1 })
+    days: number;
+
+    @Column({ name: 'merchant_oid', nullable: true })
+    merchantOid: string;
+
+    @ManyToOne(() => User, (user) => user.id, { nullable: true })
     @JoinColumn({ name: 'userId' })
     user: User;
 
-    @Column({ type: 'uuid' }) // Explicit foreign key column for efficient querying
-    userId: string;
+    @Column({ type: 'uuid', nullable: true })
+    userId: string | null;
 
     @ManyToOne(() => Car, (car) => car.id)
     @JoinColumn({ name: 'carId' })
     car: Car;
 
-    @Column({ type: 'uuid' }) // Explicit foreign key column
+    @Column({ type: 'uuid' })
     carId: string;
 
     @CreateDateColumn()
@@ -51,6 +76,6 @@ export class Booking {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => Payment, (payment) => payment.booking) // Circular dependency handled by lazy loading or forwardRef if needed, usually fine here.
+    @OneToOne(() => Payment, (payment) => payment.booking, { nullable: true })
     payment: Payment;
 }

@@ -1,0 +1,51 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Pusula Oto to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Ubuntu VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST || '156.67.27.14' }}
+          username: ${{ secrets.VPS_USERNAME || 'root' }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script_stop: true
+          command_timeout: 15m
+          script: |
+            echo "🚀 [Deploy] VPS Güncellemesi Başlatılıyor..."
+            cd /var/www/pusula-oto
+
+            echo "📥 [Git] Yeni kodlar çekiliyor..."
+            git pull origin main
+
+            echo "⚙️ [Backend] Bağımlılıklar yükleniyor ve derleniyor..."
+            cd backend
+            npm install
+            npm run build
+
+            echo "🎨 [Frontend] Bağımlılıklar yükleniyor ve derleniyor..."
+            cd ../frontend
+            npm install
+            npm run build
+
+            echo "🔄 [PM2] Servisler yeniden başlatılıyor..."
+            pm2 restart pusula-backend || pm2 start dist/main.js --name "pusula-backend"
+            pm2 restart pusula-frontend || pm2 start node_modules/.bin/next --name "pusula-frontend" -- start -p 3001
+            pm2 save
+
+            echo "✅ [Deploy] Pusula Oto Kiralama başarıyla canlıya alındı!"
+

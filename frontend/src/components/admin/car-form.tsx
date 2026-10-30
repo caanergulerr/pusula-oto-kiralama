@@ -72,13 +72,16 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
     const [loading, setLoading] = useState(false)
     const [imageFile, setImageFile] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string>(toDisplayUrl(initialData?.imageUrl))
-    const [extraFiles, setExtraFiles] = useState<File[]>([])
-    const [extraPreviews, setExtraPreviews] = useState<string[]>(() => {
+    // Mevcut kayıtlı ek fotoğraf URL'leri (veritabanından geldi)
+    const [existingExtraUrls, setExistingExtraUrls] = useState<string[]>(() => {
         if (initialData?.imageUrls) {
             try { return JSON.parse(initialData.imageUrls) } catch { return [] }
         }
         return []
     })
+    // Kullanıcının yeni seçtiği dosyalar (henüz yüklenmedi)
+    const [extraFiles, setExtraFiles] = useState<File[]>([])
+    const [newExtraPreviews, setNewExtraPreviews] = useState<string[]>([])
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>(() => {
         if (initialData?.features) {
             try {
@@ -131,14 +134,20 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
         setExtraFiles(prev => [...prev, ...files])
         files.forEach(file => {
             const reader = new FileReader()
-            reader.onloadend = () => setExtraPreviews(prev => [...prev, reader.result as string])
+            reader.onloadend = () => setNewExtraPreviews(prev => [...prev, reader.result as string])
             reader.readAsDataURL(file)
         })
         e.target.value = ''
     }
 
-    const removeExtraPreview = (idx: number) => {
-        setExtraPreviews(prev => prev.filter((_, i) => i !== idx))
+    // Mevcut (kayıtlı) ek fotoğrafı sil
+    const removeExistingExtra = (idx: number) => {
+        setExistingExtraUrls(prev => prev.filter((_, i) => i !== idx))
+    }
+
+    // Yeni seçilen (henüz yüklenmemiş) ek fotoğrafı sil
+    const removeNewExtra = (idx: number) => {
+        setNewExtraPreviews(prev => prev.filter((_, i) => i !== idx))
         setExtraFiles(prev => prev.filter((_, i) => i !== idx))
     }
 
@@ -174,30 +183,30 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
         setLoading(true)
         try {
             let imageUrl = data.imageUrl || initialData?.imageUrl || ''
-            let imageUrls: string[] = extraPreviews.filter(p => p.startsWith('/'))
+            // Başlangıç noktası: mevcut kayıtlı ek fotoğraflar (kullanıcı silmedikleri)
+            let imageUrls: string[] = [...existingExtraUrls]
 
             // Upload main image if new file selected
             if (imageFile) {
                 const formData = new FormData()
                 formData.append('file', imageFile)
                 const token = localStorage.getItem('token')
-                const uploadRes = await fetch('/api/upload', {
+                const uploadRes = await fetch('/api/cars/upload', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 })
                 if (!uploadRes.ok) throw new Error('Image upload failed')
                 const uploadData = await uploadRes.json()
-                imageUrl = uploadData.path || imageUrl  // fallback to existing if path empty
+                imageUrl = uploadData.path || imageUrl
             }
 
-            // Upload extra images (only new File objects)
-            const newExtraFiles = extraFiles
-            if (newExtraFiles.length > 0) {
+            // Upload yeni ek fotoğraflar
+            if (extraFiles.length > 0) {
                 const formData = new FormData()
-                newExtraFiles.forEach(f => formData.append('files', f))
+                extraFiles.forEach(f => formData.append('files', f))
                 const token = localStorage.getItem('token')
-                const uploadRes = await fetch('/api/upload-multiple', {
+                const uploadRes = await fetch('/api/cars/upload-multiple', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
@@ -205,15 +214,17 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 if (uploadRes.ok) {
                     const uploaded = await uploadRes.json()
                     imageUrls = [...imageUrls, ...uploaded.map((u: any) => u.path)]
+                } else {
+                    throw new Error('Extra image upload failed')
                 }
             }
 
             const submitData: any = {
                 ...data,
                 imageUrl,
-                features: JSON.stringify(selectedFeatures)
+                features: JSON.stringify(selectedFeatures),
+                imageUrls: JSON.stringify(imageUrls)  // her zaman gönder (boş array bile)
             }
-            if (imageUrls.length > 0) submitData.imageUrls = JSON.stringify(imageUrls)
 
             await onSubmit(submitData)
             toast.success(initialData ? "Araç güncellendi" : "Araç eklendi")
@@ -296,10 +307,21 @@ export function CarForm({ initialData, onSubmit }: CarFormProps) {
                 <div>
                     <Label className="text-base font-semibold">Ek Fotoğraflar (Opsiyonel)</Label>
                     <div className="mt-2 flex flex-wrap gap-3">
-                        {extraPreviews.map((src, i) => (
-                            <div key={i} className="relative w-24 h-24 border rounded-lg overflow-hidden bg-slate-50">
-                                <img src={src} alt={`ek-${i}`} className="w-full h-full object-contain p-1" />
-                                <button type="button" onClick={() => removeExtraPreview(i)} className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                        {/* Mevcut kayıtlı ek fotoğraflar */}
+                        {existingExtraUrls.map((src, i) => (
+                            <div key={`existing-${i}`} className="relative w-24 h-24 border rounded-lg overflow-hidden bg-slate-50">
+                                <img src={src} alt={`mevcut-ek-${i}`} className="w-full h-full object-contain p-1" />
+                                <button type="button" onClick={() => removeExistingExtra(i)} className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                    <X className="w-3 h-3" />
+                                </button>
+                            </div>
+                        ))}
+                        {/* Yeni eklenen (henüz yüklenmemiş) ek fotoğraflar */}
+                        {newExtraPreviews.map((src, i) => (
+                            <div key={`new-${i}`} className="relative w-24 h-24 border-2 border-blue-300 rounded-lg overflow-hidden bg-blue-50">
+                                <img src={src} alt={`yeni-ek-${i}`} className="w-full h-full object-contain p-1" />
+                                <div className="absolute top-0 left-0 right-0 bg-blue-500 text-white text-[9px] text-center py-0.5">Yeni</div>
+                                <button type="button" onClick={() => removeNewExtra(i)} className="absolute bottom-0.5 right-0.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
                                     <X className="w-3 h-3" />
                                 </button>
                             </div>

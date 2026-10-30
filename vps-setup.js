@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').resolve(__dirname, 'backend/.env') });
 const { NodeSSH } = require('node-ssh');
 
 const ssh = new NodeSSH();
@@ -8,7 +9,7 @@ async function runDeploy() {
         await ssh.connect({
             host: '156.67.27.14',
             username: 'root',
-            password: 'Y74rQ4yQBEajBm4ZW6q3e3VJrcq',
+            password: process.env.VPS_PASSWORD || '',
         });
         console.log('Baglanti basarili!');
         

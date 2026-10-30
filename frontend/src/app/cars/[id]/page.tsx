@@ -1,11 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
-import { Fuel, Gauge, Settings2, Phone, ArrowLeft, CheckCircle, Shield, Star, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+    Fuel, Gauge, Settings2, Phone, ArrowLeft, CheckCircle, Shield, Star,
+    ShieldCheck, ChevronLeft, ChevronRight, Calendar, Clock, User, Mail, CreditCard,
+    Lock, AlertCircle
+} from "lucide-react"
 import Link from "next/link"
 import { carService, Car } from "@/services/car.service"
+import { paymentService } from "@/services/payment.service"
+import { PaytrModal } from "@/components/PaytrModal"
+import { TermsModal } from "@/components/TermsModal"
 
 const FEATURE_LABELS: Record<string, string> = {
     gps: 'GPS Navigasyon',
@@ -18,11 +25,56 @@ const FEATURE_LABELS: Record<string, string> = {
     leatherSeats: 'Deri Koltuk',
 }
 
+const HOURS = [
+    "08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
+    "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
+    "20:00", "21:00", "22:00"
+]
+
 export default function CarDetailPage() {
     const { id } = useParams()
     const [car, setCar] = useState<Car | null>(null)
     const [loading, setLoading] = useState(true)
     const [activeImg, setActiveImg] = useState(0)
+
+    // Rezervasyon Form State
+    const [pickupDate, setPickupDate] = useState("")
+    const [pickupTime, setPickupTime] = useState("10:00")
+    const [returnDate, setReturnDate] = useState("")
+    const [returnTime, setReturnTime] = useState("10:00")
+    const [insuranceType, setInsuranceType] = useState<"STANDART" | "MINI" | "FULL">("STANDART")
+
+    const [customerName, setCustomerName] = useState("")
+    const [customerPhone, setCustomerPhone] = useState("")
+    const [customerEmail, setCustomerEmail] = useState("")
+    const [identityNumber, setIdentityNumber] = useState("")
+
+    // Ödeme & Modal State
+    const [submitting, setSubmitting] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [paytrData, setPaytrData] = useState<{
+        isOpen: boolean;
+        token: string;
+        merchantOid: string;
+        totalAmount: number;
+    }>({
+        isOpen: false,
+        token: "",
+        merchantOid: "",
+        totalAmount: 0,
+    })
+
+    // Varsayılan tarihleri belirle (Yarın ve 3 gün sonrası)
+    useEffect(() => {
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        const afterTomorrow = new Date()
+        afterTomorrow.setDate(afterTomorrow.getDate() + 3)
+
+        const formatIso = (d: Date) => d.toISOString().split("T")[0]
+        setPickupDate(formatIso(tomorrow))
+        setReturnDate(formatIso(afterTomorrow))
+    }, [])
 
     useEffect(() => {
         async function fetchCar() {
@@ -40,6 +92,79 @@ export default function CarDetailPage() {
         }
         if (id) fetchCar()
     }, [id])
+
+    // Minimum seçilebilir tarihler (bugün)
+    const todayStr = useMemo(() => new Date().toISOString().split("T")[0], [])
+
+    // Gün ve Fiyat Hesaplaması
+    const calculation = useMemo(() => {
+        if (!pickupDate || !returnDate || !car) {
+            return { days: 1, carTotal: 0, insuranceTotal: 0, grandTotal: 0 }
+        }
+
+        const start = new Date(`${pickupDate}T${pickupTime || "10:00"}`)
+        const end = new Date(`${returnDate}T${returnTime || "10:00"}`)
+
+        const diffMs = end.getTime() - start.getTime()
+        const rawDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+        const days = Math.max(1, rawDays)
+
+        const daily = Number(car.dailyPrice) || 0
+        const carTotal = daily * days
+
+        let insuranceDaily = 0
+        if (insuranceType === "MINI") insuranceDaily = 300
+        else if (insuranceType === "FULL") insuranceDaily = 500
+
+        const insuranceTotal = insuranceDaily * days
+        const grandTotal = carTotal + insuranceTotal
+
+        return { days, carTotal, insuranceTotal, grandTotal }
+    }, [pickupDate, pickupTime, returnDate, returnTime, insuranceType, car])
+
+    const handleBookingAndPayment = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setErrorMessage(null)
+
+        if (!car) return
+
+        if (!customerName.trim() || !customerPhone.trim() || !customerEmail.trim() || !identityNumber.trim()) {
+            setErrorMessage("Lütfen tüm iletişim ve kimlik bilgilerini eksiksiz doldurun.")
+            return
+        }
+
+        const start = new Date(`${pickupDate}T${pickupTime}`)
+        const end = new Date(`${returnDate}T${returnTime}`)
+        if (end <= start) {
+            setErrorMessage("İade tarihi ve saati, alış tarihinden sonra olmalıdır.")
+            return
+        }
+
+        setSubmitting(true)
+        try {
+            const res = await paymentService.createPaytrToken({
+                carId: car.id,
+                startDate: start.toISOString(),
+                endDate: end.toISOString(),
+                customerName: customerName.trim(),
+                customerPhone: customerPhone.trim(),
+                customerEmail: customerEmail.trim(),
+                identityNumber: identityNumber.trim(),
+                insuranceType,
+            })
+
+            setPaytrData({
+                isOpen: true,
+                token: res.token,
+                merchantOid: res.merchantOid,
+                totalAmount: res.totalPrice,
+            })
+        } catch (err: any) {
+            setErrorMessage(err.message || "Ödeme başlatılırken bir hata meydana geldi.")
+        } finally {
+            setSubmitting(false)
+        }
+    }
 
     if (loading) return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -88,21 +213,21 @@ export default function CarDetailPage() {
             </div>
 
             {/* Main content */}
-            <div className="max-w-6xl mx-auto px-6 lg:px-10 py-10">
-                <div className="grid lg:grid-cols-5 gap-8">
-                    {/* Left: Image + specs */}
-                    <div className="lg:col-span-3 space-y-6">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
+                <div className="grid lg:grid-cols-12 gap-8">
+                    {/* Left: Image + specs (7 Cols) */}
+                    <div className="lg:col-span-7 space-y-6">
                         {/* Image Gallery */}
                         {(() => {
                             const allImages: string[] = []
                             if (car.imageUrls) {
-                                try { allImages.push(...JSON.parse(car.imageUrls)) } catch {}
+                                try { allImages.push(...JSON.parse(car.imageUrls)) } catch { }
                             }
                             if (car.imageUrl && !allImages.includes(car.imageUrl)) allImages.unshift(car.imageUrl)
                             const mainImg = allImages[activeImg] || null
                             return (
                                 <div className="space-y-3">
-                                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative" style={{ height: '320px' }}>
+                                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative" style={{ height: '340px' }}>
                                         {mainImg ? (
                                             <>
                                                 <div className="relative w-full h-full bg-white">
@@ -110,8 +235,8 @@ export default function CarDetailPage() {
                                                 </div>
                                                 {allImages.length > 1 && (
                                                     <>
-                                                        <button onClick={() => setActiveImg(i => (i - 1 + allImages.length) % allImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow"><ChevronLeft className="h-4 w-4 text-slate-600" /></button>
-                                                        <button onClick={() => setActiveImg(i => (i + 1) % allImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow"><ChevronRight className="h-4 w-4 text-slate-600" /></button>
+                                                        <button onClick={() => setActiveImg(i => (i - 1 + allImages.length) % allImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition-transform active:scale-95"><ChevronLeft className="h-5 w-5 text-slate-700" /></button>
+                                                        <button onClick={() => setActiveImg(i => (i + 1) % allImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition-transform active:scale-95"><ChevronRight className="h-5 w-5 text-slate-700" /></button>
                                                     </>
                                                 )}
                                             </>
@@ -122,7 +247,7 @@ export default function CarDetailPage() {
                                     {allImages.length > 1 && (
                                         <div className="flex gap-2 overflow-x-auto pb-1">
                                             {allImages.map((img, i) => (
-                                                <button key={i} onClick={() => setActiveImg(i)} className={`flex-shrink-0 w-16 h-16 rounded-xl border-2 overflow-hidden bg-white transition-all ${i === activeImg ? 'border-blue-500' : 'border-slate-200 opacity-60 hover:opacity-100'}`}>
+                                                <button key={i} onClick={() => setActiveImg(i)} className={`flex-shrink-0 w-16 h-16 rounded-xl border-2 overflow-hidden bg-white transition-all ${i === activeImg ? 'border-blue-600 ring-2 ring-blue-500/20' : 'border-slate-200 opacity-60 hover:opacity-100'}`}>
                                                     <img src={img} alt="" className="w-full h-full object-contain p-1" style={{ mixBlendMode: 'multiply' as any }} />
                                                 </button>
                                             ))}
@@ -133,91 +258,332 @@ export default function CarDetailPage() {
                         })()}
 
                         {/* Spec cards */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                        <div className="grid grid-cols-3 gap-3">
                             {[
                                 { icon: Settings2, label: 'Vites', value: specs.transmission || specs.gear || 'Otomatik' },
                                 { icon: Fuel, label: 'Yakıt', value: specs.fuelType || specs.fuel || 'Benzin' },
-                                { icon: Gauge, label: 'Limit', value: `${car.kmLimit || 150} km` },
+                                { icon: Gauge, label: 'Günlük Limit', value: `${car.kmLimit || 250} km` },
                             ].map(({ icon: Icon, label, value }) => (
-                                <div key={label} className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 text-center shadow-sm">
-                                    <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 mx-auto mb-1.5" />
+                                <div key={label} className="bg-white rounded-xl border border-slate-200 p-3.5 text-center shadow-sm">
+                                    <Icon className="h-5 w-5 text-blue-600 mx-auto mb-1.5" />
                                     <p className="text-xs text-slate-400 font-medium mb-0.5">{label}</p>
-                                    <p className="text-xs sm:text-sm font-bold text-slate-700 leading-tight break-words">{value}</p>
+                                    <p className="text-sm font-bold text-slate-800 leading-tight">{value}</p>
                                 </div>
                             ))}
                         </div>
 
-                        {/* Kasko bilgisi */}
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <ShieldCheck className="h-5 w-5 text-green-600" />
-                                <span className="font-bold text-green-800 text-sm">Standart Kasko Dahil</span>
-                            </div>
-                            <div className="flex gap-4 text-sm text-slate-600 pl-7">
-                                <span>Mini Kasko <span className="font-bold text-slate-800">+₺300/gün</span></span>
-                                <span>Full Kasko <span className="font-bold text-slate-800">+₺500/gün</span></span>
-                            </div>
-                        </div>
-
                         {/* Description */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                            <h3 className="text-lg font-bold text-slate-800 mb-3">Açıklama & Özellikler</h3>
-                            <p className="text-slate-500 leading-relaxed mb-4">
-                                {car.description || `${car.brand} ${car.model} ile konforlu ve güvenli bir seyahat deneyimi yaşayın.`}
+                            <h3 className="text-lg font-bold text-slate-800 mb-3">Açıklama & Donanım</h3>
+                            <p className="text-slate-600 leading-relaxed mb-5 text-sm">
+                                {car.description || `${car.brand} ${car.model} ile konforlu, ekonomik ve güvenli bir sürüş deneyimi yaşayın. Tüm periyodik bakımları ve dezenfeksiyon işlemleri eksiksiz yapılmıştır.`}
                             </p>
                             {features.length > 0 && (
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-2 gap-2.5 pt-3 border-t border-slate-100">
                                     {features.map((fId: string) => (
-                                        <div key={fId} className="flex items-center gap-2 text-slate-600 text-sm">
-                                            <CheckCircle className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                                        <div key={fId} className="flex items-center gap-2 text-slate-700 text-sm">
+                                            <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                                             {FEATURE_LABELS[fId] || fId}
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </div>
-                    </div>
-
-                    {/* Right: Price + CTA */}
-                    <div className="lg:col-span-2 space-y-5">
-                        {/* Price card */}
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                            <p className="text-slate-400 text-sm mb-1">Günlük Kiralama Ücreti</p>
-                            <p className="text-5xl font-bold text-blue-600 mb-1">₺{car.dailyPrice}</p>
-                            <p className="text-slate-400 text-sm">KDV dahil, standart kasko dahil</p>
-                        </div>
-
-                        {/* CTA */}
-                        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-center shadow-xl shadow-blue-500/20">
-                            <h3 className="text-lg font-bold text-white mb-2">Rezervasyon ve Bilgi İçin</h3>
-                            <p className="text-blue-100 text-sm mb-5">Bu aracı kiralamak için bizi hemen arayın.</p>
-                            <a
-                                href="tel:+905536198164"
-                                className="flex items-center justify-center gap-2 w-full py-4 bg-white text-blue-600 text-lg font-bold rounded-xl hover:bg-blue-50 transition-all shadow-lg mb-3"
-                            >
-                                <Phone className="h-5 w-5" />
-                                +90 553 619 81 64
-                            </a>
-                            <p className="text-blue-200 text-xs font-medium">7/24 Müşteri Hizmetleri</p>
-                        </div>
 
                         {/* Trust items */}
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 grid sm:grid-cols-2 gap-3">
                             {[
-                                { icon: ShieldCheck, text: "Standart Kasko Dahil" },
-                                { icon: Shield, text: "Mini Kasko +₺300 | Full Kasko +₺500" },
-                                { icon: Star, text: "5★ müşteri memnuniyeti" },
-                                { icon: CheckCircle, text: "Teknik kontrol yapılmış" },
-                            ].map(({ icon: Icon, text }) => (
-                                <div key={text} className="flex items-center gap-3 text-slate-600 text-sm">
-                                    <Icon className="h-4 w-4 text-blue-500 flex-shrink-0" />
-                                    {text}
+                                { icon: ShieldCheck, title: "7/24 Yol Yardımı", desc: "Arıza ve kaza anında anında destek" },
+                                { icon: Star, title: "Müşteri Memnuniyeti", desc: "Elazığ'ın en yüksek puanlı araç kiralama servisi" },
+                                { icon: Lock, title: "PayTR 256-Bit SSL", desc: "Banka güvencesiyle 3D Secure ödeme" },
+                                { icon: CheckCircle, title: "Havalimanı Teslimat", desc: "Uçuş saatine göre kapıda teslim" },
+                            ].map(({ icon: Icon, title, desc }) => (
+                                <div key={title} className="flex items-start gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                    <Icon className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-xs font-bold text-slate-800">{title}</p>
+                                        <p className="text-[11px] text-slate-500">{desc}</p>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+
+                    {/* Right: Dynamic Booking & Payment Panel (5 Cols) */}
+                    <div className="lg:col-span-5 space-y-5">
+                        {/* Booking Form Card */}
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-5 sm:p-6 relative overflow-hidden">
+                            {/* Price Header */}
+                            <div className="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-5">
+                                <div>
+                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Günlük Ücret</p>
+                                    <p className="text-3xl sm:text-4xl font-extrabold text-blue-600">
+                                        ₺{Number(car.dailyPrice).toLocaleString('tr-TR')}
+                                    </p>
+                                </div>
+                                <span className="text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full font-medium">
+                                    KDV Dahil
+                                </span>
+                            </div>
+
+                            <form onSubmit={handleBookingAndPayment} className="space-y-4">
+                                {/* Error Alert */}
+                                {errorMessage && (
+                                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in">
+                                        <AlertCircle className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
+                                        <span>{errorMessage}</span>
+                                    </div>
+                                )}
+
+                                {/* Dates Section */}
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                                        Alış Tarihi & Saati
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <input
+                                            type="date"
+                                            min={todayStr}
+                                            value={pickupDate}
+                                            onChange={(e) => setPickupDate(e.target.value)}
+                                            required
+                                            className="col-span-2 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <select
+                                            value={pickupTime}
+                                            onChange={(e) => setPickupTime(e.target.value)}
+                                            className="px-2 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            {HOURS.map((h) => <option key={h} value={h}>{h}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                                        İade Tarihi & Saati
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <input
+                                            type="date"
+                                            min={pickupDate || todayStr}
+                                            value={returnDate}
+                                            onChange={(e) => setReturnDate(e.target.value)}
+                                            required
+                                            className="col-span-2 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <select
+                                            value={returnTime}
+                                            onChange={(e) => setReturnTime(e.target.value)}
+                                            className="px-2 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            {HOURS.map((h) => <option key={h} value={h}>{h}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Kasko Paketi Seçimi */}
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                                        <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                                        Kasko & Güvence Paketi
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                        {[
+                                            { type: "STANDART", title: "Standart", extra: "Ücretsiz" },
+                                            { type: "MINI", title: "Mini Kasko", extra: "+₺300/gün" },
+                                            { type: "FULL", title: "Full Kasko", extra: "+₺500/gün" },
+                                        ].map((opt) => {
+                                            const isSelected = insuranceType === opt.type
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    key={opt.type}
+                                                    onClick={() => setInsuranceType(opt.type as any)}
+                                                    className={`py-2 px-2 rounded-xl border text-center transition-all ${isSelected
+                                                        ? "border-blue-600 bg-blue-50/70 text-blue-900 ring-1 ring-blue-600 font-bold"
+                                                        : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium"
+                                                        }`}
+                                                >
+                                                    <p className="text-xs">{opt.title}</p>
+                                                    <p className={`text-[10px] ${isSelected ? "text-blue-600 font-bold" : "text-slate-400"}`}>
+                                                        {opt.extra}
+                                                    </p>
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Müşteri Bilgileri */}
+                                <div className="pt-2 border-t border-slate-100 space-y-2.5">
+                                    <p className="text-xs font-bold text-slate-800">Sürücü & İletişim Bilgileri</p>
+
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Adınız ve Soyadınız"
+                                            value={customerName}
+                                            onChange={(e) => setCustomerName(e.target.value)}
+                                            required
+                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            type="tel"
+                                            placeholder="Telefon (05XX...)"
+                                            value={customerPhone}
+                                            onChange={(e) => setCustomerPhone(e.target.value)}
+                                            required
+                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="T.C. / Pasaport No"
+                                            value={identityNumber}
+                                            onChange={(e) => setIdentityNumber(e.target.value)}
+                                            required
+                                            maxLength={11}
+                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <input
+                                            type="email"
+                                            placeholder="E-posta Adresi (Onay için)"
+                                            value={customerEmail}
+                                            onChange={(e) => setCustomerEmail(e.target.value)}
+                                            required
+                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Dinamik Fiyat Özeti */}
+                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1.5">
+                                    <div className="flex justify-between text-slate-500">
+                                        <span>Kiralama Süresi:</span>
+                                        <span className="font-bold text-slate-700">{calculation.days} Gün</span>
+                                    </div>
+                                    <div className="flex justify-between text-slate-500">
+                                        <span>Araç Tutarı:</span>
+                                        <span className="font-medium text-slate-700">₺{calculation.carTotal.toLocaleString('tr-TR')}</span>
+                                    </div>
+                                    {calculation.insuranceTotal > 0 && (
+                                        <div className="flex justify-between text-slate-500">
+                                            <span>Kasko ({insuranceType}):</span>
+                                            <span className="font-medium text-slate-700">+₺{calculation.insuranceTotal.toLocaleString('tr-TR')}</span>
+                                        </div>
+                                    )}
+                                    <div className="pt-2 border-t border-slate-200 flex justify-between items-baseline font-bold text-sm">
+                                        <span className="text-slate-900">Toplam Ödenecek:</span>
+                                        <span className="text-blue-600 text-lg">₺{calculation.grandTotal.toLocaleString('tr-TR')}</span>
+                                    </div>
+                                </div>
+
+                                {/* Yasal Sözleşmeler ve Güvenlik Onayı */}
+                                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-2">
+                                    <div className="flex items-start gap-2">
+                                        <input
+                                            type="checkbox"
+                                            id="terms-agree"
+                                            required
+                                            defaultChecked
+                                            className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                        />
+                                        <label htmlFor="terms-agree" className="leading-tight cursor-pointer">
+                                            <TermsModal 
+                                                type="rental" 
+                                                trigger={<span className="font-bold text-blue-600 hover:underline cursor-pointer">Kiralama Sözleşmesi</span>} 
+                                            /> ve{" "}
+                                            <TermsModal 
+                                                type="cancellation" 
+                                                trigger={<span className="font-bold text-blue-600 hover:underline cursor-pointer">İptal / İade Koşulları</span>} 
+                                            />'nı okudum, onaylıyorum.
+                                        </label>
+                                    </div>
+                                    <div className="text-[10px] text-slate-400 pl-5">
+                                        <TermsModal 
+                                            type="privacy" 
+                                            trigger={<span className="text-slate-500 hover:underline cursor-pointer">KVKK Aydınlatma Metni</span>} 
+                                        /> ve 256-Bit SSL güvencesiyle korunmaktadır.
+                                    </div>
+                                </div>
+
+                                {/* Submit Button */}
+                                <button
+                                    type="submit"
+                                    disabled={submitting || !isAvailable}
+                                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 text-white font-bold rounded-xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                                >
+                                    {submitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <span>Ödeme Ekranı Hazırlanıyor...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Lock className="w-4 h-4" />
+                                            <span>Rezervasyon Yap ve Güvenli Öde</span>
+                                        </>
+                                    )}
+                                </button>
+
+                                {/* PayTR ve Kart Logoları (Zarif ve Güven Veren Rozetler) */}
+                                <div className="pt-2 flex flex-col items-center justify-center gap-2 border-t border-slate-100">
+                                    <div className="flex items-center justify-center gap-2 text-slate-400">
+                                        <div className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-extrabold text-blue-900 tracking-wider">
+                                            VISA
+                                        </div>
+                                        <div className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-extrabold text-red-600 tracking-wider flex items-center gap-0.5">
+                                            <span className="inline-block w-2 h-2 rounded-full bg-red-500 -mr-1"></span>
+                                            <span className="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+                                            <span className="text-[9px] text-slate-700 font-bold ml-1">Mastercard</span>
+                                        </div>
+                                        <div className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-extrabold text-cyan-700 tracking-wider">
+                                            TROY
+                                        </div>
+                                        <div className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-bold text-slate-700 flex items-center gap-1">
+                                            <Lock className="w-2.5 h-2.5 text-emerald-600" />
+                                            <span>256-Bit SSL</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 font-medium">
+                                        Ödemeleriniz <strong className="text-slate-600">PayTR</strong> 3D Secure güvencesiyle alınır.
+                                    </p>
+                                </div>
+                            </form>
+
+                            {/* Alternative: Phone Call */}
+                            <div className="mt-4 pt-4 border-t border-slate-100 text-center">
+                                <p className="text-xs text-slate-400 mb-2">veya telefonla hemen ayırtın:</p>
+                                <a
+                                    href="tel:+905536198164"
+                                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition-colors"
+                                >
+                                    <Phone className="h-3.5 w-3.5 text-blue-600" />
+                                    +90 553 619 81 64 (7/24 Çağrı)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            {/* PayTR iFrame Modalı */}
+            <PaytrModal
+                isOpen={paytrData.isOpen}
+                onClose={() => setPaytrData(prev => ({ ...prev, isOpen: false }))}
+                token={paytrData.token}
+                merchantOid={paytrData.merchantOid}
+                totalAmount={paytrData.totalAmount}
+                carName={`${car.brand} ${car.model}`}
+            />
         </div>
     )
 }

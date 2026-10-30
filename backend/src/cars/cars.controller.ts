@@ -85,6 +85,7 @@ export class CarsController {
                 cb(null, `${randomName}${extname(file.originalname)}`);
             }
         }),
+        limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
         fileFilter: (req, file, cb) => {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                 return cb(new Error('Only image files are allowed!'), false);
@@ -110,6 +111,7 @@ export class CarsController {
                 cb(null, `${randomName}${extname(file.originalname)}`);
             }
         }),
+        limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
         fileFilter: (req, file, cb) => {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                 return cb(new Error('Only image files are allowed!'), false);

@@ -1,13 +1,15 @@
 const { NodeSSH } = require('node-ssh');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, 'backend/.env') });
 const ssh = new NodeSSH();
 
 async function deployApp() {
     try {
         console.log('Sunucuya baglaniliyor...');
         await ssh.connect({
-            host: '156.67.27.14',
-            username: 'root',
-            password: 'Y74rQ4yQBEajBm4ZW6q3e3VJrcq',
+            host: process.env.VPS_HOST || '156.67.27.14',
+            username: process.env.VPS_USER || 'root',
+            password: process.env.VPS_PASSWORD || '',
         });
         console.log('Baglanti basarili!');
 
@@ -23,8 +25,6 @@ async function deployApp() {
         const projectDir = '/var/www/pusula-oto';
 
         console.log('Kodlar Github\'dan çekiliyor...');
-        // Eğer klasör doluysa temizle veya git pull yap, biz ilk kez kuruyoruz diye direkt clone yapabiliriz 
-        // ama hata olmaması için varsa siliyoruz (dikkat: sadece ilk kurulumda güvenli)
         await execCommand(`rm -rf ${projectDir}/*`); 
         await execCommand(`git clone ${repoUrl} .`, projectDir);
 
@@ -32,14 +32,18 @@ async function deployApp() {
         
         // Backend .env
         const backendEnv = `
-DATABASE_URL="postgresql://neondb_owner:npg_vI27lUHYtOQz@ep-patient-water-altzgv9e-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require"
-JWT_SECRET="zC6ejFZdG35e7nqtmgpY/V3D3tXkM9KLZIkqqunGVRfv+SLTpmfPxGXYjG8v6NZDEZr4O/nXeTWizgSJ/08AeA=="
-FRONTEND_URL=https://elazigotokiralamapusula.com
-APP_URL=https://elazigotokiralamapusula.com
+DATABASE_URL="${process.env.DATABASE_URL || ''}"
+JWT_SECRET="${process.env.JWT_SECRET || ''}"
+FRONTEND_URL=${process.env.FRONTEND_URL || 'https://elazigotokiralamapusula.com'}
+APP_URL=${process.env.APP_URL || 'https://elazigotokiralamapusula.com'}
 NODE_ENV=production
-GMAIL_USER=otokiralamapusula@gmail.com
-GMAIL_PASS="nqif vtyh upxo lxna"
+GMAIL_USER=${process.env.GMAIL_USER || 'otokiralamapusula@gmail.com'}
+GMAIL_PASS="${process.env.GMAIL_PASS || ''}"
 PORT=3000
+PAYTR_MERCHANT_ID=${process.env.PAYTR_MERCHANT_ID || ''}
+PAYTR_MERCHANT_KEY=${process.env.PAYTR_MERCHANT_KEY || ''}
+PAYTR_MERCHANT_SALT=${process.env.PAYTR_MERCHANT_SALT || ''}
+PAYTR_TEST_MODE=${process.env.PAYTR_TEST_MODE || '1'}
 `.trim();
 
         await execCommand(`echo '${backendEnv}' > backend/.env`, projectDir);
@@ -62,16 +66,17 @@ NEXT_PUBLIC_APP_URL=https://elazigotokiralamapusula.com
 
         console.log('Frontend bagimliliklari yukleniyor ve build ediliyor...');
         await execCommand('npm install', `${projectDir}/frontend`);
-        await execCommand('npm run build', `${projectDir}/frontend`);
+        await execCommand('npx next build', `${projectDir}/frontend`);
 
         console.log('Frontend başlatılıyor...');
         await execCommand('pm2 delete pusula-frontend || true');
-        await execCommand('pm2 start npm --name "pusula-frontend" -- start', `${projectDir}/frontend`);
+        await execCommand('pm2 start node_modules/.bin/next --name "pusula-frontend" -- start -p 3001', `${projectDir}/frontend`);
 
+        console.log('Nginx ve PM2 kaydediliyor...');
         await execCommand('pm2 save');
-        await execCommand('pm2 list');
+        await execCommand('systemctl reload nginx');
 
-        console.log('Uygulama dagitimi başarıyla tamamlandı!');
+        console.log('YAYINLAMA TAMAMLANDI!');
         ssh.dispose();
     } catch (e) {
         console.error('Hata olustu:', e);

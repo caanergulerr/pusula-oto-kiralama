@@ -22,8 +22,8 @@ export class BookingsService {
 
     async findAll() {
         return this.bookingsRepository.find({
-            relations: ['car', 'user'],
-            order: { startDate: 'DESC' }
+            relations: ['car', 'user', 'payment'],
+            order: { createdAt: 'DESC' }
         });
     }
 

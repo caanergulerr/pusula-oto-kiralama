@@ -5,11 +5,20 @@ node_modules/
 
 # Environment variables (GÜVENLİK - asla paylaşma!)
 .env
+.env.*
 .env.local
 .env.production
 .env.development.local
 .env.test.local
 .env.production.local
+*.env
+*.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+!.env.example
+!backend/.env.example
 
 # Build outputs
 dist/
@@ -17,9 +26,19 @@ build/
 .next/
 out/
 
-# Logs
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+backend/data/
+
+# Logs & temp files
 *.log
 npm-debug.log*
+*_log.txt
+out_utf8.txt
+localhost_matches.txt
+test.json
 
 # OS
 .DS_Store
@@ -29,6 +48,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Uploads (araç görselleri - büyük dosyalar)
+# Uploads & Archives
 uploads/
-frontend.zip  
+frontend.zip

@@ -1,15 +1,16 @@
 
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 const { DataSource } = require('typeorm');
 const { User, UserRole } = require('./src/users/entities/user.entity');
 
 async function fixAdmin() {
     const AppDataSource = new DataSource({
         type: 'mssql',
-        host: 'localhost',
-        port: 1433,
-        username: 'sa',
-        password: 'Password123', // Assuming this from previous context or standard dev env
-        database: 'RentACarDB',
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT || '1433'),
+        username: process.env.DB_USER || 'sa',
+        password: process.env.DB_PASS || '',
+        database: process.env.DB_NAME || 'RentACarDB',
         entities: ['src/**/entities/*.entity.ts'],
         synchronize: false,
         extra: {
