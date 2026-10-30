@@ -1,0 +1,38 @@
+name: Dump Cars from VPS Database
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dump:
+    name: Dump cars table from SQLite
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH to VPS and dump cars
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST || '156.67.27.14' }}
+          username: ${{ secrets.VPS_USERNAME || 'root' }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            echo "=== CURRENT DATABASE ==="
+            sqlite3 /var/www/pusula-oto/backend/data/database.sqlite \
+              "SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features FROM cars ORDER BY createdAt ASC;" \
+              2>/dev/null || echo "DB not found at current path"
+
+            echo "=== BACKUP DATABASE ==="
+            sqlite3 /var/www/backup/database.sqlite \
+              "SELECT id, brand, model, year, dailyPrice, category, imageUrl, imageUrls, kmLimit, description, specs, features FROM cars ORDER BY createdAt ASC;" \
+              2>/dev/null || echo "No backup DB found"
+
+            echo "=== ALL SQLITE FILES ON SERVER ==="
+            find / -name "*.sqlite" 2>/dev/null
+
+            echo "=== UPLOADS DIRECTORY ==="
+            ls -la /var/www/pusula-oto/frontend/public/uploads/ 2>/dev/null || echo "No uploads dir"
+            ls -la /var/www/pusula-oto/backend/uploads/ 2>/dev/null || echo "No backend uploads"
+
+            echo "=== CARS PUBLIC IMAGES ==="
+            ls -la /var/www/pusula-oto/frontend/public/cars/ 2>/dev/null || echo "No cars dir"
