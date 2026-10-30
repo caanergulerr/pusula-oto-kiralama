@@ -29,7 +29,10 @@ jobs:
             echo "🚀 [Deploy] VPS Güncellemesi Başlatılıyor..."
             cd /var/www/pusula-oto
 
-            echo "📥 [Git] Yeni kodlar çekiliyor..."
+            echo "🧹 [Git] Sunucu temizleniyor ve en son kodlar zorla çekiliyor..."
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
             git pull origin main
 
             echo "⚙️ [Backend] Bağımlılıklar yükleniyor ve derleniyor..."
@@ -40,7 +43,8 @@ jobs:
             echo "🎨 [Frontend] Bağımlılıklar yükleniyor ve derleniyor..."
             cd ../frontend
             npm install
-            npm run build
+            rm -rf .next
+            npx next build
 
             echo "🔄 [PM2] Servisler yeniden başlatılıyor..."
             pm2 restart pusula-backend || pm2 start dist/main.js --name "pusula-backend"
