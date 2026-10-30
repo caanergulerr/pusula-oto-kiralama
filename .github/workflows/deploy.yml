@@ -36,20 +36,18 @@ jobs:
             git pull origin main
 
             echo "⚙️ [Backend] Ortam değişkenleri oluşturuluyor..."
-            cat << 'EOF' > backend/.env
-DATABASE_URL="${{ secrets.DATABASE_URL }}"
-JWT_SECRET="${{ secrets.JWT_SECRET }}"
-FRONTEND_URL=https://elazigotokiralamapusula.com
-APP_URL=https://elazigotokiralamapusula.com
-NODE_ENV=production
-GMAIL_USER="${{ secrets.GMAIL_USER }}"
-GMAIL_PASS="${{ secrets.GMAIL_PASS }}"
-PORT=3000
-PAYTR_MERCHANT_ID=test_merchant_id
-PAYTR_MERCHANT_KEY=test_merchant_key
-PAYTR_MERCHANT_SALT=test_merchant_salt
-PAYTR_TEST_MODE=1
-EOF
+            echo "DATABASE_URL=\"${{ secrets.DATABASE_URL }}\"" > backend/.env
+            echo "JWT_SECRET=\"${{ secrets.JWT_SECRET }}\"" >> backend/.env
+            echo "FRONTEND_URL=https://elazigotokiralamapusula.com" >> backend/.env
+            echo "APP_URL=https://elazigotokiralamapusula.com" >> backend/.env
+            echo "NODE_ENV=production" >> backend/.env
+            echo "GMAIL_USER=\"${{ secrets.GMAIL_USER }}\"" >> backend/.env
+            echo "GMAIL_PASS=\"${{ secrets.GMAIL_PASS }}\"" >> backend/.env
+            echo "PORT=3000" >> backend/.env
+            echo "PAYTR_MERCHANT_ID=test_merchant_id" >> backend/.env
+            echo "PAYTR_MERCHANT_KEY=test_merchant_key" >> backend/.env
+            echo "PAYTR_MERCHANT_SALT=test_merchant_salt" >> backend/.env
+            echo "PAYTR_TEST_MODE=1" >> backend/.env
 
             echo "⚙️ [Backend] Bağımlılıklar yükleniyor ve derleniyor..."
             cd backend
