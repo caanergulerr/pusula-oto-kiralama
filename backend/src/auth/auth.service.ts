@@ -43,10 +43,9 @@ export class AuthService {
 
         const fullName = registerDto.fullName || `${registerDto.firstName || ''} ${registerDto.lastName || ''}`.trim();
 
-        // Admin hesapları kontrolü
-        const adminEmails = ['otokiralamapusula@gmail.com', 'caaner.gulerr@gmail.com', 'cg158656@gmail.com'];
+        // Sadece otokiralamapusula@gmail.com ADMIN olabilir
         let role = 'CUSTOMER';
-        if (adminEmails.includes(cleanEmail)) {
+        if (cleanEmail === 'otokiralamapusula@gmail.com') {
             role = 'ADMIN';
         }
 

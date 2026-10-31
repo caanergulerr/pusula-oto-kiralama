@@ -13,31 +13,37 @@ export class UsersService implements OnModuleInit {
 
     async onModuleInit() {
         try {
-            const adminEmails = ['caaner.gulerr@gmail.com', 'otokiralamapusula@gmail.com', 'cg158656@gmail.com'];
-            for (const adminEmail of adminEmails) {
-                const existing = await this.findOneByEmail(adminEmail);
-                if (existing) {
-                    if (existing.role !== UserRole.ADMIN || !existing.isEmailVerified) {
-                        await this.usersRepository.update(existing.id, {
-                            role: UserRole.ADMIN,
-                            isEmailVerified: true,
-                        });
-                        console.log(`✅ Admin yetkisi ve doğrulaması güncellendi: ${adminEmail}`);
-                    }
-                } else if (adminEmail === 'caaner.gulerr@gmail.com' || adminEmail === 'otokiralamapusula@gmail.com') {
-                    const salt = await bcrypt.genSalt();
-                    const hashedPassword = await bcrypt.hash('Pusula2024!', salt);
-                    const admin = this.usersRepository.create({
-                        email: adminEmail,
-                        fullName: 'Caner Güler',
-                        passwordHash: hashedPassword,
+            const adminEmail = 'otokiralamapusula@gmail.com';
+            const existing = await this.findOneByEmail(adminEmail);
+            if (existing) {
+                if (existing.role !== UserRole.ADMIN || !existing.isEmailVerified) {
+                    await this.usersRepository.update(existing.id, {
                         role: UserRole.ADMIN,
                         isEmailVerified: true,
                     });
-                    await this.usersRepository.save(admin);
-                    console.log(`✅ Admin kullanıcısı (${adminEmail}) otomatik oluşturuldu.`);
+                    console.log(`✅ Admin yetkisi ve doğrulaması güncellendi: ${adminEmail}`);
                 }
+            } else {
+                const salt = await bcrypt.genSalt();
+                const hashedPassword = await bcrypt.hash('Pusula2024!', salt);
+                const admin = this.usersRepository.create({
+                    email: adminEmail,
+                    fullName: 'Pusula Oto Kiralama',
+                    passwordHash: hashedPassword,
+                    role: UserRole.ADMIN,
+                    isEmailVerified: true,
+                });
+                await this.usersRepository.save(admin);
+                console.log(`✅ Admin kullanıcısı (${adminEmail}) otomatik oluşturuldu.`);
             }
+
+            // Diğer tüm kullanıcıların CUSTOMER olduğundan emin ol
+            await this.usersRepository
+                .createQueryBuilder()
+                .update(User)
+                .set({ role: UserRole.CUSTOMER })
+                .where('LOWER(TRIM(email)) != :adminEmail', { adminEmail })
+                .execute();
         } catch (err) {
             console.error('Admin kullanıcısı oluşturulurken hata:', err);
         }
