@@ -38,7 +38,7 @@ jobs:
             echo "🧹 [Git] Sunucu temizleniyor ve en son kodlar zorla çekiliyor..."
             git fetch origin main
             git reset --hard origin/main
-            git clean -fd -e backend/data -e backend/.env
+            git clean -fd -e backend/data -e backend/.env -e frontend/public/uploads
             git pull origin main
 
             mkdir -p backend/data
@@ -82,4 +82,3 @@ jobs:
             pm2 status
 
             echo "✅ [Deploy] Pusula Oto Kiralama başarıyla canlıya alındı!"
-

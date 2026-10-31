@@ -13,20 +13,30 @@ export class UsersService implements OnModuleInit {
 
     async onModuleInit() {
         try {
-            const adminEmail = 'caaner.gulerr@gmail.com';
-            const existingAdmin = await this.usersRepository.findOneBy({ email: adminEmail });
-            if (!existingAdmin) {
-                const salt = await bcrypt.genSalt();
-                const hashedPassword = await bcrypt.hash('Pusula2024!', salt);
-                const admin = this.usersRepository.create({
-                    email: adminEmail,
-                    fullName: 'Caner Güler',
-                    passwordHash: hashedPassword,
-                    role: UserRole.ADMIN,
-                    isEmailVerified: true,
-                });
-                await this.usersRepository.save(admin);
-                console.log('✅ Admin kullanıcısı (caaner.gulerr@gmail.com) otomatik oluşturuldu.');
+            const adminEmails = ['caaner.gulerr@gmail.com', 'otokiralamapusula@gmail.com', 'cg158656@gmail.com'];
+            for (const adminEmail of adminEmails) {
+                const existing = await this.findOneByEmail(adminEmail);
+                if (existing) {
+                    if (existing.role !== UserRole.ADMIN || !existing.isEmailVerified) {
+                        await this.usersRepository.update(existing.id, {
+                            role: UserRole.ADMIN,
+                            isEmailVerified: true,
+                        });
+                        console.log(`✅ Admin yetkisi ve doğrulaması güncellendi: ${adminEmail}`);
+                    }
+                } else if (adminEmail === 'caaner.gulerr@gmail.com' || adminEmail === 'otokiralamapusula@gmail.com') {
+                    const salt = await bcrypt.genSalt();
+                    const hashedPassword = await bcrypt.hash('Pusula2024!', salt);
+                    const admin = this.usersRepository.create({
+                        email: adminEmail,
+                        fullName: 'Caner Güler',
+                        passwordHash: hashedPassword,
+                        role: UserRole.ADMIN,
+                        isEmailVerified: true,
+                    });
+                    await this.usersRepository.save(admin);
+                    console.log(`✅ Admin kullanıcısı (${adminEmail}) otomatik oluşturuldu.`);
+                }
             }
         } catch (err) {
             console.error('Admin kullanıcısı oluşturulurken hata:', err);
@@ -36,9 +46,11 @@ export class UsersService implements OnModuleInit {
     async create(userData: Partial<User>): Promise<User> {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(userData.passwordHash || '', salt);
+        const cleanEmail = (userData.email || '').trim().toLowerCase();
 
         const newUser = this.usersRepository.create({
             ...userData,
+            email: cleanEmail,
             passwordHash: hashedPassword,
         });
 
@@ -46,7 +58,11 @@ export class UsersService implements OnModuleInit {
     }
 
     async findOneByEmail(email: string): Promise<User | null> {
-        return this.usersRepository.findOneBy({ email });
+        const cleanEmail = (email || '').trim().toLowerCase();
+        return this.usersRepository
+            .createQueryBuilder('user')
+            .where('LOWER(TRIM(user.email)) = :email', { email: cleanEmail })
+            .getOne();
     }
 
     async findOne(id: string): Promise<User | null> {
@@ -84,6 +100,7 @@ export class UsersService implements OnModuleInit {
         const hashedPassword = await bcrypt.hash(newPassword, salt);
         await this.usersRepository.update(userId, {
             passwordHash: hashedPassword,
+            isEmailVerified: true,
             passwordResetToken: null,
             passwordResetExpiry: null,
         });

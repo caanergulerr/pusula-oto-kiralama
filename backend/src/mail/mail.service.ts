@@ -4,24 +4,29 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class MailService {
     private readonly logger = new Logger(MailService.name);
-    private transporter: nodemailer.Transporter;
 
-    constructor() {
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: (process.env.GMAIL_PASS || '').replace(/\s/g, ''),
-            },
+    private getTransporter(): nodemailer.Transporter {
+        const user = (process.env.GMAIL_USER || 'otokiralamapusula@gmail.com').replace(/"/g, '').trim();
+        const pass = (process.env.GMAIL_PASS || '').replace(/[\s"]/g, '');
+        return nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: { user, pass },
         });
     }
 
+    private getFromAddress(): string {
+        const user = (process.env.GMAIL_USER || 'otokiralamapusula@gmail.com').replace(/"/g, '').trim();
+        return `"Pusula Oto Kiralama" <${user}>`;
+    }
+
     async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
-        const appUrl = process.env.APP_URL || 'http://localhost:3001';
+        const appUrl = (process.env.APP_URL || 'https://elazigotokiralamapusula.com').replace(/"/g, '').trim();
         const verifyUrl = `${appUrl}/dogrulama?token=${token}`;
 
-        await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+        await this.getTransporter().sendMail({
+            from: this.getFromAddress(),
             to: toEmail,
             subject: 'Pusula Oto Kiralama - E-posta Adresinizi Doğrulayın',
             html: `
@@ -57,11 +62,11 @@ export class MailService {
     }
 
     async sendPasswordResetEmail(toEmail: string, token: string): Promise<void> {
-        const appUrl = process.env.APP_URL || 'http://localhost:3001';
+        const appUrl = (process.env.APP_URL || 'https://elazigotokiralamapusula.com').replace(/"/g, '').trim();
         const resetUrl = `${appUrl}/sifre-sifirla?token=${token}`;
 
-        await this.transporter.sendMail({
-            from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+        await this.getTransporter().sendMail({
+            from: this.getFromAddress(),
             to: toEmail,
             subject: 'Pusula Oto Kiralama - Şifre Sıfırlama',
             html: `
@@ -174,8 +179,8 @@ export class MailService {
                 </div>
             `;
 
-            await this.transporter.sendMail({
-                from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            await this.getTransporter().sendMail({
+                from: this.getFromAddress(),
                 to: recipientEmail,
                 subject: `Pusula Oto Kiralama - Rezervasyon Onayı (#${booking.merchantOid || booking.id})`,
                 html,
@@ -216,8 +221,8 @@ export class MailService {
                 </div>
             `;
 
-            await this.transporter.sendMail({
-                from: `"Pusula Oto Kiralama" <${process.env.GMAIL_USER}>`,
+            await this.getTransporter().sendMail({
+                from: this.getFromAddress(),
                 to: adminEmail,
                 subject: `🔔 Yeni Rezervasyon: ${booking.customerName || 'Müşteri'} - ${car?.brand || ''} ${car?.model || ''}`,
                 html,

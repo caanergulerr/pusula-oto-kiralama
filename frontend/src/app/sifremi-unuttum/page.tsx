@@ -24,7 +24,8 @@ export default function SifremiUnuttumPage() {
             if (res.ok) {
                 setSent(true)
             } else {
-                setError("Bir hata oluştu. Lütfen tekrar deneyin.")
+                const data = await res.json().catch(() => ({}))
+                setError(data.message || "Bir hata oluştu. Lütfen tekrar deneyin.")
             }
         } catch {
             setError("Sunucuya bağlanılamadı.")
@@ -88,7 +89,7 @@ export default function SifremiUnuttumPage() {
                         <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-6" />
                         <h2 className="text-2xl font-bold text-slate-800 mb-3">Link Gönderildi!</h2>
                         <p className="text-slate-500 mb-8 leading-relaxed">
-                            <strong>{email}</strong> adresine şifre sıfırlama linki gönderdik. Lütfen mail kutunuzu kontrol edin.
+                            <strong>{email}</strong> adresine şifre sıfırlama linki gönderdik. Lütfen gelen kutunuzu ve <strong>Spam / Gereksiz</strong> klasörünüzü kontrol edin.
                         </p>
                         <Link href="/login">
                             <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all">

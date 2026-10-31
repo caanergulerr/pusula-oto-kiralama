@@ -10,12 +10,29 @@ export class CarsService implements OnModuleInit {
         private carsRepository: Repository<Car>,
     ) { }
 
-        async onModuleInit() {
-        // Auto-seed kaldırıldı — araçlar admin panelinden eklenir.
-        // Veritabanını temizle (mevcut örnek araçları sil)
+    async onModuleInit() {
         try {
-            await this.carsRepository.clear();
-            console.log('✅ Araç veritabanı temizlendi. Admin panelinden araç ekleyebilirsiniz.');
+            const count = await this.carsRepository.count();
+            if (count === 0) {
+                await this.carsRepository.save([
+                    {
+                        brand: 'Fiat',
+                        model: 'Egea',
+                        year: 2023,
+                        dailyPrice: 2000,
+                        plateNumber: '23 FEG 023',
+                        totalStock: 2,
+                        availableStock: 2,
+                        category: 'sedan',
+                        imageUrl: '/cars/6894b7e0695becab108101ee1268dd314.png',
+                        kmLimit: 300,
+                        description: 'Geniş iç hacmi, düşük yakıt tüketimi ve konforlu sürüşüyle Fiat Egea Manuel.',
+                        specs: JSON.stringify({ fuelType: 'Dizel', transmission: 'Manuel', seats: 5 }),
+                        features: JSON.stringify(['Bluetooth', 'USB', 'Klima', 'Hız Sabitleyici', 'Geniş Bagaj']),
+                    },
+                ]);
+                console.log('✅ Fiat Egea (Manuel - 2000 TL) veritabanına eklendi.');
+            }
         } catch (err) {
             console.error('onModuleInit hata:', err);
         }

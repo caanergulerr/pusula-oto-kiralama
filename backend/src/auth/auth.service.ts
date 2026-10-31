@@ -14,10 +14,12 @@ export class AuthService {
     ) { }
 
     async validateUser(email: string, pass: string): Promise<any> {
-        const user = await this.usersService.findOneByEmail(email);
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const user = await this.usersService.findOneByEmail(cleanEmail);
         if (user && await bcrypt.compare(pass, user.passwordHash)) {
             if (!user.isEmailVerified) {
-                throw new UnauthorizedException('EMAIL_NOT_VERIFIED');
+                await this.usersService.markEmailVerified(user.id);
+                user.isEmailVerified = true;
             }
             const { passwordHash, ...result } = user;
             return result;
@@ -33,40 +35,44 @@ export class AuthService {
     }
 
     async register(registerDto: any) {
-        const existingUser = await this.usersService.findOneByEmail(registerDto.email);
+        const cleanEmail = (registerDto.email || '').trim().toLowerCase();
+        const existingUser = await this.usersService.findOneByEmail(cleanEmail);
         if (existingUser) {
-            throw new ConflictException('User already exists');
+            throw new ConflictException('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın veya şifrenizi sıfırlayın.');
         }
 
-        const fullName = registerDto.fullName || `${registerDto.firstName} ${registerDto.lastName}`.trim();
+        const fullName = registerDto.fullName || `${registerDto.firstName || ''} ${registerDto.lastName || ''}`.trim();
 
-        // Special check for Admin
+        // Admin hesapları kontrolü
+        const adminEmails = ['otokiralamapusula@gmail.com', 'caaner.gulerr@gmail.com', 'cg158656@gmail.com'];
         let role = 'CUSTOMER';
-        if (registerDto.email.toLowerCase() === 'otokiralamapusula@gmail.com') {
+        if (adminEmails.includes(cleanEmail)) {
             role = 'ADMIN';
         }
 
         // Doğrulama tokeni oluştur
         const verificationToken = uuidv4();
 
-        const user = await this.usersService.create({
-            email: registerDto.email,
+        await this.usersService.create({
+            email: cleanEmail,
             passwordHash: registerDto.password,
             fullName: fullName,
             phone: registerDto.phone,
             role: role as any,
             verificationToken,
-            isEmailVerified: false,
+            isEmailVerified: true,
         });
 
         // Doğrulama maili gönder
         try {
-            await this.mailService.sendVerificationEmail(registerDto.email, verificationToken);
+            console.log('KAYIT DOĞRULAMA MAİLİ GÖNDERİLİYOR:', cleanEmail);
+            await this.mailService.sendVerificationEmail(cleanEmail, verificationToken);
+            console.log('KAYIT DOĞRULAMA MAİLİ GÖNDERİLDİ:', cleanEmail);
         } catch (err) {
             console.error('Mail gönderilemedi:', err);
         }
 
-        return { message: 'Kayıt başarılı. E-posta adresinizi doğrulayın.' };
+        return { message: 'Kayıt başarılı. Giriş yapabilirsiniz.' };
     }
 
     async verifyEmail(token: string) {
@@ -79,25 +85,26 @@ export class AuthService {
     }
 
     async forgotPassword(email: string) {
-        const user = await this.usersService.findOneByEmail(email);
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const user = await this.usersService.findOneByEmail(cleanEmail);
         if (!user) {
-            return { message: 'Eğer bu e-posta kayıtlıysa sıfırlama linki gönderildi.' };
+            throw new BadRequestException('Bu e-posta adresi ile kayıtlı bir hesap bulunamadı.');
         }
 
         const token = uuidv4();
         const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 saat
         await this.usersService.setPasswordResetToken(user.id, token, expiry);
 
-        console.log('MAİL GÖNDERME BAŞLADI:', email);
-        await this.mailService.sendPasswordResetEmail(email, token);
-        console.log('MAİL GÖNDERME BAŞARILI:', email);
+        console.log('ŞİFRE SIFIRLAMA MAİLİ GÖNDERİLİYOR:', cleanEmail);
+        await this.mailService.sendPasswordResetEmail(cleanEmail, token);
+        console.log('ŞİFRE SIFIRLAMA MAİLİ GÖNDERİLDİ:', cleanEmail);
 
-        return { message: 'Eğer bu e-posta kayıtlıysa sıfırlama linki gönderildi.' };
+        return { message: 'Şifre sıfırlama linki e-posta adresinize gönderildi.' };
     }
 
     async resetPassword(token: string, newPassword: string) {
         const user = await this.usersService.findByPasswordResetToken(token);
-        if (!user || !user.passwordResetExpiry || user.passwordResetExpiry < new Date()) {
+        if (!user || !user.passwordResetExpiry || new Date(user.passwordResetExpiry) < new Date()) {
             throw new BadRequestException('Geçersiz veya süresi dolmuş şifre sıfırlama linki.');
         }
         await this.usersService.resetPassword(user.id, newPassword);

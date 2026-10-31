@@ -62,14 +62,14 @@ export function RegisterForm() {
     if (emailSent) {
         return (
             <div className="mx-auto max-w-sm text-center space-y-6 py-10">
-                <div className="text-6xl">📧</div>
-                <h1 className="text-2xl font-bold text-slate-800">E-posta Kutunuzu Kontrol Edin!</h1>
+                <div className="text-6xl">✅</div>
+                <h1 className="text-2xl font-bold text-slate-800">Kayıt Başarılı!</h1>
                 <p className="text-slate-500 leading-relaxed">
-                    <strong>Kayıt başarılı!</strong> Size e-posta adresinize bir doğrulama linki gönderdik. Mail kutunuzu kontrol edip linke tıklayın, ardından giriş yapabilirsiniz.
+                    <strong>Hesabınız oluşturuldu ve aktifleştirildi!</strong> Hemen giriş yapabilirsiniz. (E-posta adresinize gönderilen doğrulama maili için gelen kutunuzu veya Spam/Gereksiz klasörünü de kontrol edebilirsiniz.)
                 </p>
                 <Link href="/login">
                     <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all">
-                        Giriş Sayfasına Git
+                        Hemen Giriş Yap
                     </button>
                 </Link>
             </div>
