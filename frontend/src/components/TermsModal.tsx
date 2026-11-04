@@ -8,35 +8,81 @@ export function TermsModal({
     type, 
     trigger 
 }: { 
-    type: "rental" | "cancellation" | "privacy"; 
+    type: "preInfo" | "rental" | "cancellation" | "privacy"; 
     trigger?: React.ReactNode 
 }) {
     const [open, setOpen] = useState(false);
 
     const contentMap = {
+        preInfo: {
+            title: "Ön Bilgilendirme Formu",
+            icon: ShieldAlert,
+            body: (
+                <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">1. SATICI / HİZMET SAĞLAYICI KÜNYESİ</h4>
+                        <p>
+                            <strong>Ticari Ünvan:</strong> Pusula Oto Kiralama - Hasan Aktaş<br />
+                            <strong>Vergi Dairesi / Vergi No:</strong> Hazar Vergi Dairesi / 0400708479<br />
+                            <strong>Açık Adres:</strong> İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez / Elazığ<br />
+                            <strong>Telefon:</strong> +90 553 619 81 64<br />
+                            <strong>E-posta:</strong> otokiralamapusula@gmail.com
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">2. HİZMETİN TEMEL NİTELİKLERİ VE BEDELİ</h4>
+                        <p>
+                            Sözleşme konusu hizmet, Kiracı tarafından web sitesi (<strong>elazigotokiralamapusula.com</strong>) üzerinden marka, model, kiralama tarihleri ve kasko paketi seçilen aracın belirtilen süre boyunca kiralanması hizmetidir. Kiralama bedeli ve KDV dahil toplam ödenecek tutar rezervasyon özet ekranında açıkça gösterilmektedir.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">3. DEPOZİTO / PROVİZYON UYGULAMASI</h4>
+                        <p>
+                            Araç teslimi esnasında sürücü adına kayıtlı kredi kartından <strong>2.000 TL depozito / provizyon</strong> işlemi uygulanmaktadır. Araç, kiralama süresi sonunda hasarsız, eksiksiz ve trafik cezası/HGS borcu olmaksızın teslim edildiğinde provizyon bloke işlemi kaldırılır / iade edilir.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">4. ÖDEME VE TESLİMAT ŞARTLARI</h4>
+                        <p>
+                            Ödemeler BDDK lisanslı <strong>PayTR Sanal POS</strong> altyapısı ve 256-Bit SSL / 3D Secure güvencesiyle tahsil edilir. Araç teslimatı, rezervasyonda seçilen tarih ve saatte Elazığ Merkez Ofisimizden veya Elazığ Havalimanı teslimat noktasından Kiracı&apos;ya bizzat yapılır.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">5. İPTAL, İADE VE CAYMA HAKKI</h4>
+                        <p>
+                            Araç alış saatine <strong>24 saat veya daha fazla</strong> süre kala yapılan iptallerde ödenen tutarın tamamı (%100) kesintisiz iade edilir. Teslimata 24 saatten az süre kala yapılan iptallerde veya aracın teslim alınmaması (No-Show) halinde 1 günlük kira bedeli kesilerek kalan tutar ödeme yapılan karta iade edilir.
+                        </p>
+                    </div>
+                </div>
+            )
+        },
         rental: {
-            title: "Mesafeli Araç Kiralama ve Hizmet Sözleşmesi",
+            title: "Mesafeli Satış (Kiralama) Sözleşmesi",
             icon: FileText,
             body: (
                 <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
                     <div>
                         <h4 className="font-bold text-slate-800 text-sm mb-1">1. TARAFLAR VE AMAÇ</h4>
                         <p>
-                            İşbu sözleşme, Pusula Oto Kiralama (Kiraya Veren) ile web sitesi (elazigotokiralamapusula.com) üzerinden araç kiralama rezervasyonu yapan ve ödemesini gerçekleştiren Müşteri (Kiracı) arasında akdedilmiştir.
+                            İşbu sözleşme, <strong>Pusula Oto Kiralama - Hasan Aktaş</strong> (Hazar V.D. - 0400708479, İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez/Elazığ) ile web sitesi (<strong>elazigotokiralamapusula.com</strong>) üzerinden araç kiralama rezervasyonu yapan ve ödemesini gerçekleştiren Müşteri (Kiracı) arasında 6502 Sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği uyarınca akdedilmiştir.
                         </p>
                     </div>
 
                     <div>
                         <h4 className="font-bold text-slate-800 text-sm mb-1">2. SÜRÜCÜ VE EHLİYET KOŞULLARI</h4>
                         <p>
-                            Kiracı, aracı teslim alırken geçerli sürücü belgesi ve kimlik/pasaport ibraz etmekle yükümlüdür. Ekonomik grup araçlar için en az 21 yaş ve 2 yıllık ehliyet; orta ve lüks grup araçlar için en az 25 yaş ve 3 yıllık ehliyet şartı aranır.
+                            Kiracı, aracı teslim alırken geçerli sürücü belgesi ve T.C. Kimlik/Pasaport ibraz etmekle yükümlüdür. Ekonomik grup araçlar için en az 21 yaş ve 2 yıllık ehliyet; orta ve üst segment araçlar için en az 25 yaş ve 3 yıllık ehliyet şartı aranır.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-800 text-sm mb-1">3. TESLİMAT VE İADE</h4>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">3. DEPOZİTO / PROVİZYON VE TESLİMAT</h4>
                         <p>
-                            Araç, rezervasyonda belirtilen gün ve saatte Elazığ Merkez ofisi veya Elazığ Havalimanı teslimat noktasında teslim edilir ve aynı noktada teslim alınır. Gecikmelerde saatlik ek ücret veya günlük kiralama bedeli uygulanır.
+                            Araç teslimi esnasında sürücü adına kayıtlı kredi kartından <strong>2.000 TL depozito/provizyon</strong> işlemi uygulanmaktadır. Araç hasarsız ve eksiksiz teslim edildiğinde provizyon kaldırılır / iade edilir. Araç, rezervasyonda belirtilen gün ve saatte Elazığ Merkez ofisi veya Elazığ Havalimanı teslimat noktasında teslim edilir ve aynı noktada iade alınır.
                         </p>
                     </div>
 
@@ -48,9 +94,9 @@ export function TermsModal({
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-800 text-sm mb-1">5. GÜVENLİK VE ÖDEME</h4>
+                        <h4 className="font-bold text-slate-800 text-sm mb-1">5. GÜVENLİK, ÖDEME VE UYUŞMAZLIK</h4>
                         <p>
-                            Ödemeler PayTR 256-Bit SSL korumalı altyapı ile tahsil edilir. Kart bilgileri sistemlerimizde saklanmaz.
+                            Ödemeler PayTR 256-Bit SSL korumalı altyapı ile tahsil edilir ve kart bilgileri sistemlerimizde saklanmaz. İşbu sözleşmeden doğabilecek uyuşmazlıklarda Elazığ Tüketici Hakem Heyetleri ve Elazığ Mahkemeleri yetkilidir.
                         </p>
                     </div>
                 </div>

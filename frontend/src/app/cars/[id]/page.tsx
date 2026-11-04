@@ -52,6 +52,8 @@ export default function CarDetailPage() {
     // Ödeme & Modal State
     const [submitting, setSubmitting] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [preInfoAccepted, setPreInfoAccepted] = useState(false)
+    const [contractAccepted, setContractAccepted] = useState(false)
     const [paytrData, setPaytrData] = useState<{
         isOpen: boolean;
         token: string;
@@ -130,6 +132,11 @@ export default function CarDetailPage() {
 
         if (!customerName.trim() || !customerPhone.trim() || !customerEmail.trim() || !identityNumber.trim()) {
             setErrorMessage("Lütfen tüm iletişim ve kimlik bilgilerini eksiksiz doldurun.")
+            return
+        }
+
+        if (!preInfoAccepted || !contractAccepted) {
+            setErrorMessage("Lütfen Ön Bilgilendirme Formu'nu ve Mesafeli Satış (Kiralama) Sözleşmesi'ni okuyup onaylayın.")
             return
         }
 
@@ -288,6 +295,21 @@ export default function CarDetailPage() {
                                     ))}
                                 </div>
                             )}
+                        </div>
+
+                        {/* Depozito / Provizyon Uyarısı (Araç Detay) */}
+                        <div className="bg-amber-50/90 border border-amber-200/90 rounded-2xl p-5 shadow-sm flex items-start gap-3.5">
+                            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center shrink-0 mt-0.5">
+                                <CreditCard className="h-5 w-5 text-amber-700" />
+                            </div>
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-bold text-amber-950 flex items-center gap-1.5">
+                                    Depozito / Provizyon Bilgilendirmesi
+                                </h4>
+                                <p className="text-xs sm:text-sm text-amber-900/90 leading-relaxed">
+                                    Araç teslimi esnasında sürücü adına kayıtlı kredi kartından <strong>2.000 TL depozito/provizyon</strong> işlemi uygulanmaktadır. Araç hasarsız ve eksiksiz teslim edildiğinde provizyon kaldırılır / iade edilir.
+                                </p>
+                            </div>
                         </div>
 
                         {/* Trust items */}
@@ -484,42 +506,84 @@ export default function CarDetailPage() {
                                         <span className="text-slate-900">Toplam Ödenecek:</span>
                                         <span className="text-blue-600 text-lg">₺{calculation.grandTotal.toLocaleString('tr-TR')}</span>
                                     </div>
+
+                                    {/* Rezervasyon Özeti İçinde Depozito / Provizyon Uyarısı */}
+                                    <div className="mt-2.5 pt-2.5 border-t border-amber-200/80 bg-amber-50/90 -mx-3.5 -mb-3.5 p-3 rounded-b-xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
+                                        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                        <span>
+                                            <strong>Depozito / Provizyon:</strong> Araç teslimi esnasında sürücü adına kayıtlı kredi kartından <strong>2.000 TL</strong> depozito/provizyon işlemi uygulanmaktadır. Araç hasarsız ve eksiksiz teslim edildiğinde provizyon kaldırılır / iade edilir.
+                                        </span>
+                                    </div>
                                 </div>
 
-                                {/* Yasal Sözleşmeler ve Güvenlik Onayı */}
-                                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-2">
-                                    <div className="flex items-start gap-2">
+                                {/* Yasal Sözleşmeler ve İki Ayrı Zorunlu Onay Kutucuğu */}
+                                <div className="p-3.5 bg-slate-50/90 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-2.5">
+                                    <div className="flex items-start gap-2.5">
                                         <input
                                             type="checkbox"
-                                            id="terms-agree"
+                                            id="pre-info-agree"
+                                            checked={preInfoAccepted}
+                                            onChange={(e) => setPreInfoAccepted(e.target.checked)}
                                             required
-                                            defaultChecked
-                                            className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0"
                                         />
-                                        <label htmlFor="terms-agree" className="leading-tight cursor-pointer">
-                                            <TermsModal 
-                                                type="rental" 
-                                                trigger={<span className="font-bold text-blue-600 hover:underline cursor-pointer">Kiralama Sözleşmesi</span>} 
-                                            /> ve{" "}
-                                            <TermsModal 
-                                                type="cancellation" 
-                                                trigger={<span className="font-bold text-blue-600 hover:underline cursor-pointer">İptal / İade Koşulları</span>} 
-                                            />'nı okudum, onaylıyorum.
+                                        <label htmlFor="pre-info-agree" className="leading-snug cursor-pointer select-none">
+                                            <TermsModal
+                                                type="preInfo"
+                                                trigger={
+                                                    <span
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="font-bold text-blue-600 hover:text-blue-700 underline cursor-pointer"
+                                                    >
+                                                        Ön Bilgilendirme Formu
+                                                    </span>
+                                                }
+                                            />&apos;nu okudum ve onaylıyorum.
                                         </label>
                                     </div>
-                                    <div className="text-[10px] text-slate-400 pl-5">
-                                        <TermsModal 
-                                            type="privacy" 
-                                            trigger={<span className="text-slate-500 hover:underline cursor-pointer">KVKK Aydınlatma Metni</span>} 
-                                        /> ve 256-Bit SSL güvencesiyle korunmaktadır.
+
+                                    <div className="flex items-start gap-2.5">
+                                        <input
+                                            type="checkbox"
+                                            id="distance-contract-agree"
+                                            checked={contractAccepted}
+                                            onChange={(e) => setContractAccepted(e.target.checked)}
+                                            required
+                                            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0"
+                                        />
+                                        <label htmlFor="distance-contract-agree" className="leading-snug cursor-pointer select-none">
+                                            <TermsModal
+                                                type="rental"
+                                                trigger={
+                                                    <span
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="font-bold text-blue-600 hover:text-blue-700 underline cursor-pointer"
+                                                    >
+                                                        Mesafeli Satış (Kiralama) Sözleşmesi
+                                                    </span>
+                                                }
+                                            />&apos;ni okudum ve onaylıyorum.
+                                        </label>
+                                    </div>
+
+                                    <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-200/70 flex flex-wrap items-center gap-x-2 gap-y-1">
+                                        <TermsModal
+                                            type="cancellation"
+                                            trigger={<span className="text-slate-500 hover:text-blue-600 underline cursor-pointer">İptal &amp; İade Koşulları</span>}
+                                        />
+                                        <span>•</span>
+                                        <TermsModal
+                                            type="privacy"
+                                            trigger={<span className="text-slate-500 hover:text-blue-600 underline cursor-pointer">KVKK Aydınlatma Metni</span>}
+                                        />
                                     </div>
                                 </div>
 
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    disabled={submitting || !isAvailable}
-                                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 text-white font-bold rounded-xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+                                    disabled={submitting || !isAvailable || !preInfoAccepted || !contractAccepted}
+                                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
                                 >
                                     {submitting ? (
                                         <>
