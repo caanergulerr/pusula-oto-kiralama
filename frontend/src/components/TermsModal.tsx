@@ -24,7 +24,7 @@ export function TermsModal({
                         <p>
                             <strong>Ticari Ünvan:</strong> Pusula Oto Kiralama - Hasan Aktaş<br />
                             <strong>Vergi Dairesi / Vergi No:</strong> Hazar Vergi Dairesi / 0400708479<br />
-                            <strong>Açık Adres:</strong> İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez / Elazığ<br />
+                            <strong>Açık Adres:</strong> İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11 Merkez / Elazığ<br />
                             <strong>Telefon:</strong> +90 553 619 81 64<br />
                             <strong>E-posta:</strong> otokiralamapusula@gmail.com
                         </p>
@@ -68,7 +68,7 @@ export function TermsModal({
                     <div>
                         <h4 className="font-bold text-slate-800 text-sm mb-1">1. TARAFLAR VE AMAÇ</h4>
                         <p>
-                            İşbu sözleşme, <strong>Pusula Oto Kiralama - Hasan Aktaş</strong> (Hazar V.D. - 0400708479, İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez/Elazığ) ile web sitesi (<strong>elazigotokiralamapusula.com</strong>) üzerinden araç kiralama rezervasyonu yapan ve ödemesini gerçekleştiren Müşteri (Kiracı) arasında 6502 Sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği uyarınca akdedilmiştir.
+                            İşbu sözleşme, <strong>Pusula Oto Kiralama - Hasan Aktaş</strong> (Hazar V.D. - 0400708479, İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11 Merkez / Elazığ) ile web sitesi (<strong>elazigotokiralamapusula.com</strong>) üzerinden araç kiralama rezervasyonu yapan ve ödemesini gerçekleştiren Müşteri (Kiracı) arasında 6502 Sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği uyarınca akdedilmiştir.
                         </p>
                     </div>
 

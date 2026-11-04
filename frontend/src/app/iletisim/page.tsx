@@ -2,7 +2,7 @@ import { Phone, MapPin, Clock, Mail, MessageCircle } from "lucide-react"
 
 const contactInfo = [
     { icon: Phone, title: "Telefon", lines: ["+90 553 619 81 64"], color: "bg-blue-50 border-blue-200 text-blue-600", iconBg: "bg-blue-100", href: "tel:+905536198164" },
-    { icon: MapPin, title: "Adres", lines: ["Pusula Oto Kiralama", "Elazığ"], color: "bg-emerald-50 border-emerald-200 text-emerald-600", iconBg: "bg-emerald-100", href: "https://maps.app.goo.gl/MsBza54gUJPv2hAp9" },
+    { icon: MapPin, title: "Adres", lines: ["İzzet Paşa Mah. Hacı Tevfik Efendi Sk.", "No: 2 İç Kapı No: 11 Merkez / Elazığ"], color: "bg-emerald-50 border-emerald-200 text-emerald-600", iconBg: "bg-emerald-100", href: "https://maps.app.goo.gl/MsBza54gUJPv2hAp9" },
     { icon: Clock, title: "Çalışma Saatleri", lines: ["Hafta içi: 08:00 - 20:00", "Hafta sonu: 09:00 - 18:00"], color: "bg-violet-50 border-violet-200 text-violet-600", iconBg: "bg-violet-100", href: null },
     { icon: Mail, title: "E-posta", lines: ["otokiralamapusula@gmail.com"], color: "bg-amber-50 border-amber-200 text-amber-600", iconBg: "bg-amber-100", href: "mailto:otokiralamapusula@gmail.com" },
 ]

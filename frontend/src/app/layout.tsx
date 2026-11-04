@@ -105,8 +105,8 @@ export default function RootLayout({
               priceRange: "₺₺",
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "İzzet Paşa, Şht. İlhanlar Cd.",
-                addressLocality: "Elazığ Merkez",
+                streetAddress: "İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11",
+                addressLocality: "Merkez",
                 addressRegion: "Elazığ",
                 postalCode: "23200",
                 addressCountry: "TR",

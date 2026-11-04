@@ -96,7 +96,7 @@ export function Footer() {
                                     className="flex items-start gap-2.5 text-slate-400 hover:text-blue-400 transition-colors"
                                 >
                                     <MapPin className="h-4 w-4 text-blue-400 flex-shrink-0 mt-0.5" />
-                                    <span>İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez/Elazığ</span>
+                                    <span>İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11 Merkez / Elazığ</span>
                                 </a>
                             </li>
                             <li>

@@ -80,7 +80,7 @@ export default function KiralamaKosullariPage() {
                 >
                     <p>
                         <strong>1. Taraflar:</strong> İşbu sözleşme; <strong>Pusula Oto Kiralama - Hasan Aktaş</strong> (Hazar Vergi Dairesi, VKN: 0400708479,
-                        Adres: İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez/Elazığ, Tel: +90 553 619 81 64, E-posta: otokiralamapusula@gmail.com) (&quot;Kiraya Veren&quot;)
+                        Adres: İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11 Merkez / Elazığ, Tel: +90 553 619 81 64, E-posta: otokiralamapusula@gmail.com) (&quot;Kiraya Veren&quot;)
                         ile elazigotokiralamapusula.com üzerinden rezervasyon yapan müşteri (&quot;Kiracı&quot;) arasında akdedilmiştir.
                     </p>
                     <p><strong>2. Konu:</strong> Sözleşmenin konusu, Kiracı&apos;nın web sitesi üzerinden seçtiği aracın, belirtilen tarih aralığında ve rezervasyon özetinde gösterilen bedel karşılığında kiralanmasıdır.</p>
@@ -127,7 +127,7 @@ export default function KiralamaKosullariPage() {
                     title="KVKK Aydınlatma Metni ve Çerez Politikası"
                     subtitle="6698 Sayılı Kişisel Verilerin Korunması Kanunu kapsamında bilgilendirme"
                 >
-                    <p><strong>• Veri sorumlusu:</strong> Pusula Oto Kiralama - Hasan Aktaş (VKN: 0400708479), İzzet Paşa, Şht. İlhanlar Cd., 23200 Elazığ Merkez/Elazığ.</p>
+                    <p><strong>• Veri sorumlusu:</strong> Pusula Oto Kiralama - Hasan Aktaş (VKN: 0400708479), İzzet Paşa Mah. Hacı Tevfik Efendi Sk. No: 2 İç Kapı No: 11 Merkez / Elazığ.</p>
                     <p><strong>• İşlenen veriler:</strong> Ad-soyad, T.C. kimlik/pasaport numarası, ehliyet bilgileri, telefon, e-posta ve rezervasyon bilgileri.</p>
                     <p><strong>• İşleme amaçları:</strong> Kiralama sözleşmesinin kurulması ve ifası, faturalandırma, Emniyet Genel Müdürlüğü KABİS bildirimi gibi yasal yükümlülüklerin yerine getirilmesi ve müşteri iletişimi.</p>
                     <p><strong>• Aktarım:</strong> Veriler yalnızca yasal zorunluluk halinde yetkili kamu kurumlarıyla ve ödeme işlemi için PayTR ile paylaşılır.</p>
